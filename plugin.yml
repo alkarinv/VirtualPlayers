@@ -1,5 +1,5 @@
-name: VirtualPlayer
-version: 1.1.5
+name: VirtualPlayers
+version: 1.2.0
 author: Alkarin
 
 main: com.alk.virtualPlayer.VirtualPlayers

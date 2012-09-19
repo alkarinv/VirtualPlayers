@@ -1,5 +1,6 @@
 package com.alk.virtualPlayer;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -24,6 +25,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -38,11 +40,16 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 	static Map<String,VirtualPlayer> vps = new HashMap<String,VirtualPlayer>();
 
 	@Override
-	public void onDisable() {}
-
-	@Override
 	public void onEnable() {
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
+		for (VirtualPlayer vp: vps.values()){
+			makeVirtualPlayer(vp.getName());
+		}
+	}
+
+	@Override
+	public void onDisable() {
+		deleteVirtualPlayers();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -67,12 +74,13 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 			VirtualPlayer vp = vps.get(args[0]);
 			if (vp == null){
 				vp = makeVirtualPlayer(args[0]);
+				vps.put(vp.getName(), vp);
 			}
 			if (args[1].equalsIgnoreCase("disconnect") || args[1].equalsIgnoreCase("dc")
 					|| args[1].equalsIgnoreCase("connect")){
 				return playerConnection(vp,args[1].equalsIgnoreCase("connect") );
 			} else if (args[1].equalsIgnoreCase("respawn")){
-					return playerRespawn(sender,vp);
+				return playerRespawn(sender,vp);
 			} else if (args[1].equalsIgnoreCase("status")){
 				sendMessage(sender, "&4"+vp);
 				return true;
@@ -85,7 +93,6 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 				sendMessage(sender, "&6"+vp.getName() +"&2 opped!");
 				return true;
 			} 
-			
 			if (!vp.isOnline()){
 				sendMessage(sender, "&6"+vp.getName()+"&4 is offline!!");
 				return true;
@@ -106,9 +113,16 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 			} else if (args[1].equalsIgnoreCase("OpenInventoryEvent") || args[1].equalsIgnoreCase("oie")){
 				return openInventoryEvent(sender, vp,args);
 			} else if (args[1].equalsIgnoreCase("tp")){
-				vp.teleport(getLocation(args[2]));
+				try {
+					vp.teleport(getLocation(args[2]));
+				} catch (Exception e) {
+					sendMessage(sender,e.getMessage());
+				}
 				return true;
-			}
+			} else if (args[1].equalsIgnoreCase("chat")){
+				return chatEvent(sender, vp,args);
+			} 
+
 			StringBuilder sb = new StringBuilder();
 			for (int i=1;i<args.length;i++){
 				sb.append(args[i]);
@@ -123,10 +137,42 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		return true;
 	}
 
+	private boolean chatEvent(CommandSender sender, final VirtualPlayer vp, String[] args) {
+		StringBuilder sb = new StringBuilder();
+		for (int i=2;i<args.length;i++){
+			sb.append(args[i]);
+		}
+		final String msg = Util.colorChat(sb.toString());
+		final HashSet<Player> players = new HashSet<Player>(Arrays.asList(Bukkit.getOnlinePlayers()));
+		players.addAll(vps.values());
+		Runnable r = new Runnable(){
+			@Override
+			public void run() {
+				AsyncPlayerChatEvent apce = new AsyncPlayerChatEvent(true, vp,msg, players);
+				Bukkit.getPluginManager().callEvent(apce);
+			}
+		};
+		new Thread(r).start();
+
+		sendMessage(sender, "&6"+vp.getName() +"&2 said " + msg);
+		return true;
+	}
+	
+	@EventHandler
+	public void onAsyncChatEvent(AsyncPlayerChatEvent event){
+		if (!vps.containsKey(event.getPlayer().getName())) /// don't need to handle it
+			return;
+		/// For some reason we do need to actually send the messages from virtualplayers ourself
+        final String message = String.format(event.getFormat(), event.getPlayer().getDisplayName(), event.getMessage());
+		for (Player p : event.getRecipients()){
+			p.sendMessage(message);
+		}
+	}
+	
 	private boolean playerRespawn(CommandSender sender, VirtualPlayer vp) {
 		World w = vp.getWorld();
 		vp.respawn(w.getSpawnLocation());
-        return true;
+		return true;
 	}
 
 	private boolean openInventoryEvent(CommandSender sender, VirtualPlayer vp, String[] args) {
@@ -143,17 +189,17 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 			return true;
 		}
 		/// TODO complete 
-//		ItemStack is = InventoryUtil.getItemStack(args[1]);
-//		Integer x = Integer.parseInt(args[3]), y = Integer.parseInt(args[4]), z = Integer.parseInt(args[5]);
-//		World w = Bukkit.getWorld(args[2]);
-//		Block replaced = w.getBlockAt(x,y,z); q	
-//		Block b = w.getBlockAt(x,y,z); 
-//		BlockState bs = Mate
-//        BlockState blockState = CraftBlockState.getBlockState(w,x,y,z); // CraftBukkit
+		//		ItemStack is = InventoryUtil.getItemStack(args[1]);
+		//		Integer x = Integer.parseInt(args[3]), y = Integer.parseInt(args[4]), z = Integer.parseInt(args[5]);
+		//		World w = Bukkit.getWorld(args[2]);
+		//		Block replaced = w.getBlockAt(x,y,z); q	
+		//		Block b = w.getBlockAt(x,y,z); 
+		//		BlockState bs = Mate
+		//        BlockState blockState = CraftBlockState.getBlockState(w,x,y,z); // CraftBukkit
 
-//	    callBlockPlaceEvent(World world, EntityHuman who, BlockState replacedBlockState, int clickedX, int clickedY, int clickedZ) {
-//		CraftEventFactory.callBlockPlaceEvent(w, vp, BlockState., clickedX, clickedY, clickedZ);
-//		BlockPlaceEvent bpe =new BlockPlaceEvent(b, replaced, b, Material.AIR, (Player) vp, true);
+		//	    callBlockPlaceEvent(World world, EntityHuman who, BlockState replacedBlockState, int clickedX, int clickedY, int clickedZ) {
+		//		CraftEventFactory.callBlockPlaceEvent(w, vp, BlockState., clickedX, clickedY, clickedZ);
+		//		BlockPlaceEvent bpe =new BlockPlaceEvent(b, replaced, b, Material.AIR, (Player) vp, true);
 		return false;
 	}
 
@@ -169,7 +215,7 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		}
 		return true;
 	}
-	
+
 
 	private void sendMessage(CommandSender sender, String string) {
 		sender.sendMessage(Util.colorChat(string));
@@ -206,7 +252,7 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		vp.setHealth(0);
 		vp.damage(50);
 		EntityDeathEvent ede = new EntityDeathEvent(vp,is);
-        cserver.getPluginManager().callEvent(ede);						
+		cserver.getPluginManager().callEvent(ede);						
 		return true;
 	}
 
@@ -214,11 +260,11 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		vp.setOnline(connecting);
 		CraftServer cserver = (CraftServer) Bukkit.getServer();
 		if (connecting){
-	        PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(vp, "\u00A7e" + vp.getName()+ " joined the game.");
-	        cserver.getPluginManager().callEvent(playerJoinEvent);						
+			PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(vp, "\u00A7e" + vp.getName()+ " joined the game.");
+			cserver.getPluginManager().callEvent(playerJoinEvent);						
 		} else {
-	        PlayerQuitEvent playerQuitEvent = new PlayerQuitEvent(vp, "\u00A7e" + vp.getName()+ " left the game.");
-	        cserver.getPluginManager().callEvent(playerQuitEvent);			
+			PlayerQuitEvent playerQuitEvent = new PlayerQuitEvent(vp, "\u00A7e" + vp.getName()+ " left the game.");
+			cserver.getPluginManager().callEvent(playerQuitEvent);			
 		}
 
 		return true;
@@ -236,10 +282,23 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		VirtualPlayer vp = new VirtualPlayer(cserver,mcserver,world, name, iiw);
 		vp.loc = location;
 		vps.put(vp.getName(),vp);
-		
+
+		return vp;
+	}	
+
+	public static void deleteVirtualPlayers(){
+		for (VirtualPlayer vp: vps.values()){
+			net.minecraft.server.World world = ((CraftWorld) vp.getLocation().getWorld()).getHandle();
+			world.removeEntity(vp.getHandle());
+		}
+	}
+	public static VirtualPlayer deleteVirtualPlayer(VirtualPlayer vp){
+		net.minecraft.server.World world = ((CraftWorld) vp.getLocation().getWorld()).getHandle();
+		world.removeEntity(vp.getHandle());
+		vps.remove(vp.getName());		
 		return vp;
 	}
-	
+
 	public static VirtualPlayer getPlayer(String pname){
 		return vps.get(pname);
 	}
@@ -254,15 +313,26 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		return (Player[]) players.toArray(new Player[players.size()]);
 	}
 
-	static Location getLocation(String locstr) {
+	static Location getLocation(String locstr) throws Exception {
 		//		String loc = node.getString(nodestr,null);
 		if (locstr == null)
 			return null;
 		String split[] = locstr.split(",");
-		String w = split[0];
-		float x = Float.valueOf(split[1]);
-		float y = Float.valueOf(split[2]);
-		float z = Float.valueOf(split[3]);
+		float x,y,z;
+		String w = null;
+		if (split.length == 4){
+			w = split[0];
+			x = Float.valueOf(split[1]);
+			y = Float.valueOf(split[2]);
+			z = Float.valueOf(split[3]);
+		} else if (split.length == 3){
+			//			w = Bukkit.getWorlds().get(0);
+			x = Float.valueOf(split[0]);
+			y = Float.valueOf(split[1]);
+			z = Float.valueOf(split[2]);			
+		} else {
+			throw new Exception("You must specify a world and coords or just coords: Example world,5,6,7");
+		}
 		float yaw = 0, pitch = 0;
 		if (split.length > 4){yaw = Float.valueOf(split[4]);}
 		if (split.length > 5){pitch = Float.valueOf(split[5]);}
