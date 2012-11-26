@@ -1,0 +1,5 @@
+Create virtual players for easy debugging of plugins through the console.
+
+Versions:
+1.2: Added chatting to virtualplayers
+

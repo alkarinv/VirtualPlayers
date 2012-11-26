@@ -1,0 +1,15 @@
+name: VirtualPlayers
+version: 1.2.0
+author: Alkarin
+
+main: com.alk.virtualPlayer.VirtualPlayers
+commands:
+    ap:
+        description: add virtual player
+        usage: /team <create|join|leave|decline> [arguments]
+    dc:
+        description: do command as a virtual player
+        usage: /arena <create|alter|join|leave|top...> [arguments]
+
+
+
