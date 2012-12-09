@@ -6,19 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import net.minecraft.server.ContainerPlayer;
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.EntityPlayer;
-
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 public class InventoryUtil {
-	static final String version = "InventoryUtil 2.1.3.2";
+	static final String version = "InventoryUtil 2.1.4";
 	static final boolean DEBUG = false;
 
 	public static class Armor{
@@ -32,6 +27,7 @@ public class InventoryUtil {
 		public Enchantment e;
 		public Integer lvl;
 		boolean all = false;
+		@Override
 		public String toString(){return  (e !=null?e.getName():"null")+":" + lvl;}
 	}
 
@@ -40,27 +36,27 @@ public class InventoryUtil {
 
 	public static Enchantment getEnchantmentByCommonName(String iname){
 		iname = iname.toLowerCase();
-		if (iname.contains("smite")) return Enchantment.getByName("DAMAGE_UNDEAD"); 
-		if (iname.contains("sharp")) return Enchantment.getByName("DAMAGE_ALL"); 
-		if (iname.contains("fire") && iname.contains("prot")) return Enchantment.getByName("PROTECTION_FIRE"); 
-		if (iname.contains("fire")) return Enchantment.getByName("FIRE_ASPECT"); 
-		if (iname.contains("exp") && iname.contains("prot")) return Enchantment.getByName("PROTECTION_EXPLOSIONS"); 
-		if (iname.contains("blast") && iname.contains("prot")) return Enchantment.getByName("PROTECTION_EXPLOSIONS"); 
-		if (iname.contains("arrow") && iname.contains("prot")) return Enchantment.getByName("PROTECTION_PROJECTILE"); 
-		if (iname.contains("proj") && iname.contains("prot")) return Enchantment.getByName("PROTECTION_PROJECTILE"); 
-		if (iname.contains("respiration")) return Enchantment.getByName("OXYGEN"); 
-		if (iname.contains("fall")) return Enchantment.getByName("PROTECTION_FALL"); 
-		if (iname.contains("prot")) return Enchantment.getByName("PROTECTION_ENVIRONMENTAL"); 
-		if (iname.contains("respiration")) return Enchantment.getByName("OXYGEN"); 
-		if (iname.contains("oxygen")) return Enchantment.getByName("OXYGEN"); 
-		if (iname.contains("aqua")) return Enchantment.getByName("WATER_WORKER"); 
-		if (iname.contains("arth")) return Enchantment.getByName("DAMAGE_ARTHROPODS"); 
-		if (iname.contains("knockback")) return Enchantment.getByName("KNOCKBACK"); 
-		if (iname.contains("loot")) return Enchantment.getByName("LOOT_BONUS_MOBS"); 
-		if (iname.contains("dig")) return Enchantment.getByName("DIG_SPEED"); 
-		if (iname.contains("silk")) return Enchantment.getByName("SILK_TOUCH"); 
-		if (iname.contains("unbreaking")) return Enchantment.getByName("DURABILITY"); 
-		if (iname.contains("dura")) return Enchantment.getByName("DURABILITY"); 
+		if (iname.contains("smite")) return Enchantment.getByName("DAMAGE_UNDEAD");
+		if (iname.contains("sharp")) return Enchantment.getByName("DAMAGE_ALL");
+		if (iname.contains("fire") && iname.contains("prot")) return Enchantment.getByName("PROTECTION_FIRE");
+		if (iname.contains("fire")) return Enchantment.getByName("FIRE_ASPECT");
+		if (iname.contains("exp") && iname.contains("prot")) return Enchantment.getByName("PROTECTION_EXPLOSIONS");
+		if (iname.contains("blast") && iname.contains("prot")) return Enchantment.getByName("PROTECTION_EXPLOSIONS");
+		if (iname.contains("arrow") && iname.contains("prot")) return Enchantment.getByName("PROTECTION_PROJECTILE");
+		if (iname.contains("proj") && iname.contains("prot")) return Enchantment.getByName("PROTECTION_PROJECTILE");
+		if (iname.contains("respiration")) return Enchantment.getByName("OXYGEN");
+		if (iname.contains("fall")) return Enchantment.getByName("PROTECTION_FALL");
+		if (iname.contains("prot")) return Enchantment.getByName("PROTECTION_ENVIRONMENTAL");
+		if (iname.contains("respiration")) return Enchantment.getByName("OXYGEN");
+		if (iname.contains("oxygen")) return Enchantment.getByName("OXYGEN");
+		if (iname.contains("aqua")) return Enchantment.getByName("WATER_WORKER");
+		if (iname.contains("arth")) return Enchantment.getByName("DAMAGE_ARTHROPODS");
+		if (iname.contains("knockback")) return Enchantment.getByName("KNOCKBACK");
+		if (iname.contains("loot")) return Enchantment.getByName("LOOT_BONUS_MOBS");
+		if (iname.contains("dig")) return Enchantment.getByName("DIG_SPEED");
+		if (iname.contains("silk")) return Enchantment.getByName("SILK_TOUCH");
+		if (iname.contains("unbreaking")) return Enchantment.getByName("DURABILITY");
+		if (iname.contains("dura")) return Enchantment.getByName("DURABILITY");
 		return null;
 	}
 
@@ -104,9 +100,9 @@ public class InventoryUtil {
 
 	public static boolean hasArmor(Player p) {
 		PlayerInventory pi= p.getInventory();
-		return(	(pi.getBoots() != null && pi.getBoots().getType() != Material.AIR) && 
-				(pi.getHelmet() != null && pi.getBoots().getType() != Material.AIR) && 
-				(pi.getLeggings() != null && pi.getBoots().getType() != Material.AIR) && 
+		return(	(pi.getBoots() != null && pi.getBoots().getType() != Material.AIR) &&
+				(pi.getHelmet() != null && pi.getBoots().getType() != Material.AIR) &&
+				(pi.getLeggings() != null && pi.getBoots().getType() != Material.AIR) &&
 				(pi.getChestplate() != null && pi.getBoots().getType() != Material.AIR) );
 	}
 
@@ -223,7 +219,7 @@ public class InventoryUtil {
 		for (ItemStack is : inv.getArmorContents()){
 			if (is != null && is.getType() == itemType.getType()){
 				return true;}
-		}		
+		}
 		return false;
 	}
 
@@ -276,16 +272,16 @@ public class InventoryUtil {
 				case LEGGINGS: inv.setLeggings(itemStack); break;
 				case BOOTS: inv.setBoots(itemStack); break;
 				}
-			} 
+			}
 			if (!empty){
 				if (better && (!isHelmet && ignoreHelmet)){
 					addItemToInventory(inv, oldArmor,oldArmor.getAmount());
 				} else {
-					addItemToInventory(inv, itemStack,stockAmount);			
+					addItemToInventory(inv, itemStack,stockAmount);
 				}
-			}			
+			}
 		} else {
-			addItemToInventory(inv, itemStack,stockAmount);			
+			addItemToInventory(inv, itemStack,stockAmount);
 		}
 		if (update)
 			try { player.updateInventory(); } catch (Exception e){}
@@ -338,12 +334,9 @@ public class InventoryUtil {
 	}
 
 	public static void closeInventory(Player p) {
-		EntityHuman eh = ((CraftPlayer)p).getHandle();
+
 		try{
-			if ((eh instanceof EntityPlayer)){
-				EntityPlayer ep = (EntityPlayer) eh;
-				ep.closeInventory();
-			}
+			p.closeInventory();
 		}catch(Exception closeInventoryError){
 			/// This almost always throws an NPE, but does its job so ignore
 		}
@@ -353,35 +346,11 @@ public class InventoryUtil {
 		try{
 			PlayerInventory inv = p.getInventory();
 			closeInventory(p);
-			EntityHuman eh = ((CraftPlayer)p).getHandle();
+
 			if (inv != null){
 				inv.clear();
 				inv.setArmorContents(null);
 				inv.setItemInHand(null);
-				try {
-					/// get rid of items inside the crafting square
-					ContainerPlayer cp = (ContainerPlayer) eh.defaultContainer;
-					int size = cp.craftInventory.getContents().length;
-
-					for (int i=0;i< size;i++){
-						cp.craftInventory.setItem(i, null);
-					}
-					/// Check for a workbench, dispenser
-					/// No need for this now, closing inventory before this does the trick
-					//				Container container = (Container) eh.activeContainer;
-					//				size = container.e.size();
-					//				for (int i=0;i< size;i++){
-					//					net.minecraft.server.ItemStack is = container.a(i);
-					//					if (is != null && is.id != 0){
-					//						is.id =0;
-					//						is.count =0;
-					//					}
-					//						
-					//				}
-
-				} catch (Exception e){
-					e.printStackTrace();
-				}
 			}
 		} catch(Exception ee){
 			ee.printStackTrace();
@@ -430,7 +399,7 @@ public class InventoryUtil {
 			String split[] = str.split(" ");
 			is = InventoryUtil.getItemStack(split[0].trim());
 //			System.out.println(" split = " + split);
-			final int amt = split.length > 1 ? Integer.valueOf(split[split.length -1]) : 1; 
+			final int amt = split.length > 1 ? Integer.valueOf(split[split.length -1]) : 1;
 			is.setAmount(amt);
 			for (int i = 1; i < split.length-1;i++){
 				EnchantmentWithLevel ewl = getEnchantment(split[i].trim());
@@ -460,7 +429,7 @@ public class InventoryUtil {
 		if (index != -1){
 			try {lvl = Integer.parseInt(str.substring(index + 1)); } catch (Exception err){}
 			str = str.substring(0,index);
-		} 
+		}
 
 		//        System.out.println("String = <" + str +">   " + lvl);
 		try {e = Enchantment.getById(Integer.valueOf(str));} catch (Exception err){}
@@ -484,7 +453,7 @@ public class InventoryUtil {
 			EnchantmentWithLevel ewl = getEnchantment(s);
 			if (ewl != null){
 				if (ewl.all){
-					return addAllEnchantments(is);}					
+					return addAllEnchantments(is);}
 				encs.put(ewl.e, ewl.lvl);
 			}
 		}
@@ -518,7 +487,7 @@ public class InventoryUtil {
 		if (is == null)
 			return null;
 		StringBuilder sb = new StringBuilder();
-		sb.append(is.getType().toString() +":"+(byte)is.getData().getData()+" ");
+		sb.append(is.getType().toString() +":"+is.getData().getData()+" ");
 		Map<Enchantment,Integer> encs = is.getEnchantments();
 		for (Enchantment enc : encs.keySet()){
 			sb.append(enc.getName() + ":" + encs.get(enc)+" ");
