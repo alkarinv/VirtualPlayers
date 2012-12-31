@@ -51,9 +51,11 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 	static int pcount = 0;
 
 	static Map<String,VirtualPlayer> vps = new HashMap<String,VirtualPlayer>();
+	static VirtualPlayers plugin;
 
 	@Override
 	public void onEnable() {
+		plugin = this;
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		for (VirtualPlayer vp: vps.values()){
 			try {
@@ -67,6 +69,10 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 	@Override
 	public void onDisable() {
 		deleteVirtualPlayers();
+	}
+
+	public static VirtualPlayers getSelf(){
+		return plugin;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
