@@ -1,5 +1,7 @@
 package com.alk.virtualPlayer;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.minecraft.server.v1_4_6.MinecraftServer;
 import net.minecraft.server.v1_4_6.PlayerInteractManager;
@@ -35,9 +39,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -464,6 +470,29 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		vp.setOnline(connecting);
 		CraftServer cserver = (CraftServer) Bukkit.getServer();
 		if (connecting){
+
+			// PreLogin Event has to be called from a thread other than the main.
+			final String playerName = vp.getName();
+			Runnable r = new Runnable(){
+				@Override
+				public void run() {
+					try	{
+						AsyncPlayerPreLoginEvent playerPreLoginEvent = new AsyncPlayerPreLoginEvent(playerName, InetAddress.getLocalHost());
+						Bukkit.getPluginManager().callEvent(playerPreLoginEvent);
+					} catch (UnknownHostException ex)	{
+					}
+				}
+			};
+			new Thread(r).start();
+
+			// Then the Login Event.
+			try	{
+				PlayerLoginEvent playerLoginEvent = new PlayerLoginEvent(vp, "localhost", InetAddress.getLocalHost());
+				cserver.getPluginManager().callEvent(playerLoginEvent);
+			} catch (UnknownHostException ex) {
+			}
+
+			// Finally, the player join event.
 			PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(vp, "\u00A7e" + vp.getName()+ " joined the game.");
 			cserver.getPluginManager().callEvent(playerJoinEvent);
 		} else {
