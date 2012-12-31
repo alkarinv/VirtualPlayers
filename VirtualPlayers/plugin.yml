@@ -1,9 +1,12 @@
 name: VirtualPlayers
-version: 1.3.1
+version: 1.3.5
 author: Alkarin
+description: CraftBukkit_1.4.6. Create Virtualplayers for debugging or running commands otherwise unavailable from the console
 
 main: com.alk.virtualPlayer.VirtualPlayers
 commands:
+    virtualplayers:
+        aliases: [vp,virtualplayer]
     ap:
         description: add virtual player
         usage: /team <create|join|leave|decline> [arguments]

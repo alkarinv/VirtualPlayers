@@ -1,16 +1,15 @@
 package com.alk.virtualPlayer;
 
-import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.ItemInWorldManager;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerConfigurationManagerAbstract;
-import net.minecraft.server.World;
+import net.minecraft.server.v1_4_6.EntityPlayer;
+import net.minecraft.server.v1_4_6.MinecraftServer;
+import net.minecraft.server.v1_4_6.PlayerInteractManager;
+import net.minecraft.server.v1_4_6.World;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_6.CraftServer;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -18,7 +17,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 public class VirtualPlayer extends CraftPlayer {
 	Player keepInformed; /// who to send the messages to
 	boolean online = true;
-	ServerConfigurationManagerAbstract scm;
 	int health = 20;
 	boolean isop = true;
 	static boolean enableMessages = true;
@@ -28,7 +26,7 @@ public class VirtualPlayer extends CraftPlayer {
 
 	Location loc;
 
-	public VirtualPlayer(CraftServer cserver, MinecraftServer mcserver, World world, String s, ItemInWorldManager iiw) {
+	public VirtualPlayer(CraftServer cserver, MinecraftServer mcserver, World world, String s, PlayerInteractManager iiw) {
 		super(cserver,new EntityPlayer(mcserver,world,s, iiw));
 		this.loc = this.getLocation();
 	}
@@ -36,6 +34,11 @@ public class VirtualPlayer extends CraftPlayer {
 	public VirtualPlayer(CraftServer cserver, EntityPlayer ep) {
 		super(cserver,ep);
 		this.loc = this.getLocation();
+	}
+
+	@Override
+	public void updateInventory(){
+		/// Do nothing
 	}
 
 	@Override

@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.server.ItemInWorldManager;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.WorldServer;
+import net.minecraft.server.v1_4_6.MinecraftServer;
+import net.minecraft.server.v1_4_6.PlayerInteractManager;
+import net.minecraft.server.v1_4_6.WorldServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -21,10 +21,10 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_4_6.CraftServer;
+import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_6.event.CraftEventFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -423,7 +423,6 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		return true;
 	}
 
-
 	private boolean damageEvent(CommandSender sender, VirtualPlayer vp, String[] args) {
 		if (args.length < 2){
 			return sendMessage(sender, "&cUsage: &6/dc <virtual player> hit <player2> [damage: default 5]");
@@ -485,8 +484,9 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		MinecraftServer mcserver = cserver.getServer();
 		WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
 		WorldServer worldserver = mcserver.getWorldServer(0);
-		ItemInWorldManager iiw = new ItemInWorldManager(worldserver);
-		VirtualPlayer vp = new VirtualPlayer(cserver,mcserver,world, name, iiw);
+//		ItemInWorldManager iiw = new ItemInWorldManager(worldserver);
+		PlayerInteractManager pim = new PlayerInteractManager(worldserver);
+		VirtualPlayer vp = new VirtualPlayer(cserver,mcserver,world, name, pim);
 		vp.loc = location;
 		vps.put(vp.getName(),vp);
 		return vp;
