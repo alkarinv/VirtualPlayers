@@ -9,8 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.minecraft.server.v1_4_6.MinecraftServer;
 import net.minecraft.server.v1_4_6.PlayerInteractManager;
@@ -472,11 +470,9 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		return true;
 	}
 
-	private boolean playerConnection(CommandSender sender, VirtualPlayer vp, boolean connecting) {
+	private boolean playerConnection(CommandSender sender, final VirtualPlayer vp, boolean connecting) {
 		vp.setOnline(connecting);
-		CraftServer cserver = (CraftServer) Bukkit.getServer();
 		if (connecting){
-
 			// PreLogin Event has to be called from a thread other than the main.
 			final String playerName = vp.getName();
 			Runnable r = new Runnable(){
@@ -487,21 +483,30 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 						Bukkit.getPluginManager().callEvent(playerPreLoginEvent);
 					} catch (UnknownHostException ex)	{
 					}
+					/// After we are done Asynchronously handling the preloginevent
+					/// Sync back up and call the Login and Join events
+					Bukkit.getScheduler().scheduleSyncDelayedTask(VirtualPlayers.getSelf(), new Runnable(){
+						@Override
+						public void run() {
+							// Then the Login Event.
+							CraftServer cserver = (CraftServer) Bukkit.getServer();
+							try	{
+								PlayerLoginEvent playerLoginEvent = new PlayerLoginEvent(vp, "localhost", InetAddress.getLocalHost());
+								cserver.getPluginManager().callEvent(playerLoginEvent);
+							} catch (UnknownHostException ex) {
+							}
+
+							// Finally, the player join event.
+							PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(vp, "\u00A7e" + vp.getName()+ " joined the game.");
+							cserver.getPluginManager().callEvent(playerJoinEvent);
+						}
+					});
+
 				}
 			};
 			new Thread(r).start();
-
-			// Then the Login Event.
-			try	{
-				PlayerLoginEvent playerLoginEvent = new PlayerLoginEvent(vp, "localhost", InetAddress.getLocalHost());
-				cserver.getPluginManager().callEvent(playerLoginEvent);
-			} catch (UnknownHostException ex) {
-			}
-
-			// Finally, the player join event.
-			PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(vp, "\u00A7e" + vp.getName()+ " joined the game.");
-			cserver.getPluginManager().callEvent(playerJoinEvent);
-		} else {
+		} else {  /// Disconnecting
+			CraftServer cserver = (CraftServer) Bukkit.getServer();
 			PlayerQuitEvent playerQuitEvent = new PlayerQuitEvent(vp, "\u00A7e" + vp.getName()+ " left the game.");
 			cserver.getPluginManager().callEvent(playerQuitEvent);
 		}
