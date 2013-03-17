@@ -1,4 +1,4 @@
-package com.alk.virtualPlayer;
+package mc.alk.virtualPlayer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

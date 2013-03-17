@@ -1,4 +1,4 @@
-package com.alk.virtualPlayer;
+package mc.alk.virtualPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

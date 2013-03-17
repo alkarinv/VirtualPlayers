@@ -1,4 +1,4 @@
-package com.alk.virtualPlayer;
+package mc.alk.virtualPlayer;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.server.v1_4_6.MinecraftServer;
-import net.minecraft.server.v1_4_6.PlayerInteractManager;
-import net.minecraft.server.v1_4_6.WorldServer;
+import net.minecraft.server.v1_5_R1.MinecraftServer;
+import net.minecraft.server.v1_5_R1.PlayerInteractManager;
+import net.minecraft.server.v1_5_R1.WorldServer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -21,12 +21,13 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_4_6.CraftServer;
-import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_4_6.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_5_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_5_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_5_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_5_R1.event.CraftEventFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -51,8 +52,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class VirtualPlayers extends JavaPlugin implements Listener{
-
-	static int pcount = 0;
 
 	static Map<String,VirtualPlayer> vps = new HashMap<String,VirtualPlayer>();
 	static VirtualPlayers plugin;
@@ -123,7 +122,7 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 			VirtualPlayer vp = vps.get(args[0]);
 			if (vp == null){
 				try {
-					vp = makeVirtualPlayer(args[0]);
+					vp = (VirtualPlayer) makeVirtualPlayer(args[0]);
 				} catch (Exception e) {
 					sendMessage(sender, e.getMessage());
 					e.printStackTrace();
@@ -174,7 +173,7 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 				return chatEvent(sender, vp,args);
 			} else if (args[1].equalsIgnoreCase("hit")){
 				return damageEvent(sender, vp,args);
-			} else if (args[1].equalsIgnoreCase("interact")){
+			} else if (args[1].equalsIgnoreCase("interact")|| args[1].equalsIgnoreCase("click")){
 				return interactEvent(sender, vp,args);
 			}
 
@@ -208,7 +207,7 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		if (args.length < 4){
 			return sendMessage(sender, "dc <player> interact <left|right> <location>");
 		}
-		World w = vp.getWorld();
+//		World w = vp.getWorld();
 		Location l = parseLocation(sender, args[3]);
 		if (l == null)
 			return true;
@@ -220,12 +219,21 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 			action = left ? Action.LEFT_CLICK_BLOCK : Action.RIGHT_CLICK_BLOCK;
 		}
 		ItemStack inhand = vp.getItemInHand();
-		Block b = w.getBlockAt(l);
+//		Block b = w.getBlockAt(l);
+		Block b = l.getWorld().getBlockAt(l);
 		//PlayerInteractEvent(final Player who, final Action action, final ItemStack item,
 		// 					  final Block clickedBlock, final BlockFace clickedFace) {
 		PlayerInteractEvent ede = new PlayerInteractEvent(vp, action, inhand, b , BlockFace.EAST);
 		Bukkit.getPluginManager().callEvent(ede);
-		return sendMessage(sender, "&6"+vp.getName() +"&e "+action.name()+" &4" + b.getType() +"&2  with a &a"+inhand.getType().name());
+		sendMessage(sender, "&6"+vp.getName() +"&e "+action.name()+" &4" + b.getType() +"&2  with a &a"+inhand.getType().name());
+		if (b.getType() == Material.SIGN || b.getType()== Material.SIGN_POST){
+			Sign s = (Sign) b.getState();
+			String[] lines = s.getLines();
+			for (int i=1;i<=lines.length;i++){
+				sendMessage(sender, "&6Line: "+i+"=&f'"+lines[i-1]+"&f'");
+			}
+		}
+		return true;
 	}
 
 	private boolean teleportPlayer(CommandSender sender, VirtualPlayer vp, String[] args) {
@@ -289,8 +297,11 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 
 	private boolean chatEvent(CommandSender sender, final VirtualPlayer vp, String[] args) {
 		StringBuilder sb = new StringBuilder();
+		boolean first = true;
 		for (int i=2;i<args.length;i++){
+			if (!first) sb.append(" ");
 			sb.append(args[i]);
+			first = false;
 		}
 		final String msg = Util.colorChat(sb.toString());
 		final HashSet<Player> players = new HashSet<Player>(Arrays.asList(Bukkit.getOnlinePlayers()));
@@ -387,7 +398,7 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 			try {n = Integer.valueOf(args[1]);}catch(Exception e){}
 		}
 		for (int i=0;i<n;i++){
-			final VirtualPlayer p1 = makeVirtualPlayer("p" + (++pcount));
+			final VirtualPlayer p1 = (VirtualPlayer) makeVirtualPlayer("p" + (vps.size()+1));
 			vps.put(p1.getName(),p1);
 			sendMessage(sender,"Added Player " + p1.getName());
 		}
@@ -514,7 +525,11 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		return true;
 	}
 
-	public static VirtualPlayer makeVirtualPlayer(String name) throws Exception{
+	public static Player makeVirtualPlayer() throws Exception{
+		return makeVirtualPlayer("p"+(vps.size()+1));
+	}
+
+	public static Player makeVirtualPlayer(String name) throws Exception{
 		CraftServer cserver = (CraftServer) Bukkit.getServer();
 		List<World> worlds = cserver.getWorlds();
 		if (worlds == null || worlds.isEmpty())
@@ -524,7 +539,6 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 		MinecraftServer mcserver = cserver.getServer();
 		WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
 		WorldServer worldserver = mcserver.getWorldServer(0);
-//		ItemInWorldManager iiw = new ItemInWorldManager(worldserver);
 		PlayerInteractManager pim = new PlayerInteractManager(worldserver);
 		VirtualPlayer vp = new VirtualPlayer(cserver,mcserver,world, name, pim);
 		vp.loc = location;
