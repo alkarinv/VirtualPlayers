@@ -5,7 +5,7 @@
     <artifactId>VirtualPlayers</artifactId>
     <packaging>jar</packaging>
     <version>1.4</version>
-    <name>BattleTracker</name>
+    <name>VirtualPlayers</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.5-R0.1-SNAPSHOT</version>
+            <version>1.5.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- unknown plugins that I had to add to the repo -->
