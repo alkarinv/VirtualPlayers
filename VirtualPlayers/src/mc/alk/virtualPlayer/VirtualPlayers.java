@@ -114,7 +114,7 @@ public class VirtualPlayers extends JavaPlugin implements Listener{
 			}
 			sendMessage(sender,"&cVirtualPlayer command &6" + args[0] +"&c not found");
 			return false;
-		} else if(commandStr.equalsIgnoreCase("dc")){
+		} else if(commandStr.equalsIgnoreCase("vdc")){
 			if (args.length < 2){
 				System.out.println("you need more commands");
 				return true;
