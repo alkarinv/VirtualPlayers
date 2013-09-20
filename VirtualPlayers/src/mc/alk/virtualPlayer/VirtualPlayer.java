@@ -1,24 +1,27 @@
 package mc.alk.virtualPlayer;
 
-import net.minecraft.server.v1_5_R2.EntityPlayer;
-import net.minecraft.server.v1_5_R2.MinecraftServer;
-import net.minecraft.server.v1_5_R2.PlayerInteractManager;
-import net.minecraft.server.v1_5_R2.World;
+import net.minecraft.server.v1_6_R2.EntityPlayer;
+import net.minecraft.server.v1_6_R2.MinecraftServer;
+import net.minecraft.server.v1_6_R2.PlayerInteractManager;
+import net.minecraft.server.v1_6_R2.World;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_5_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_6_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class VirtualPlayer extends CraftPlayer
 {
 	Player keepInformed; // / who to send the messages to
 	boolean online = true;
-	int health = 20;
+	double health = 20;
 	boolean isop = true;
 	static boolean enableMessages = true;
 	boolean showMessages = true;
@@ -65,68 +68,65 @@ public class VirtualPlayer extends CraftPlayer
 	}
 
 	@Override
-	public void setHealth(int h)
+	public void setHealth(double h)
 	{
+		if (h < 0) h = 0;
 		this.health = h;
-		try
-		{
-			super.setHealth(h);
-		} catch (Exception e)
-		{
-		}
-		this.health = h;
+		try{super.setHealth(h);} catch (Exception e){}
+		try{this.getHandle().setHealth((float)h);} catch (Exception e){}
 	}
 
 	@Override
 	public boolean isDead()
 	{
-		return health <= 0;
+		return super.isDead() || health <= 0;
 	}
 
 	@Override
-	public int getHealth()
-	{
-		return health;
-	}
-
-	@Override
-	public void sendMessage(String s)
-	{
+	public void sendMessage(String s){
 		if (showMessages && enableMessages)
 			Util.sendMessage(this, (!isOnline() ? "&4(Offline)&b" : "")
 					+ getName() + " gettingMessage= " + s);
 	}
 
-	public void moveTo(Location loc)
-	{
+	public void moveTo(Location loc){
 		entity.move(loc.getX(), loc.getY(), loc.getZ());
 	}
 
 	public boolean teleport(Location l, boolean respawn)
 	{
-		boolean changedWorlds = !this.loc.getWorld().getName()
-				.equals(l.getWorld().getName());
-		final String teleporting = respawn ? "respawning" : "teleporting";
-		if (showTeleports && enableMessages)
-		{
-			String fromWorld = "";
-			String toWorld = "";
+		if (isDead()){
+			return false;
+		}
+		try{
+			boolean changedWorlds = !this.loc.getWorld().getName()
+					.equals(l.getWorld().getName());
+			final String teleporting = respawn ? "respawning" : "teleporting";
+			if (showTeleports && enableMessages)
+			{
+				String fromWorld = "";
+				String toWorld = "";
+				if (changedWorlds)
+				{
+					fromWorld = "&5" + loc.getWorld().getName() + "&4,";
+					toWorld = "&5" + l.getWorld().getName() + "&4,";
+				}
+				Util.sendMessage(this, getName() + "&e " + teleporting + " from &4"
+						+ fromWorld + Util.getLocString(loc) + " &e-> &4" + toWorld
+						+ Util.getLocString(l));
+			}
+			this.loc = l.clone();
 			if (changedWorlds)
 			{
-				fromWorld = "&5" + loc.getWorld().getName() + "&4,";
-				toWorld = "&5" + l.getWorld().getName() + "&4,";
+				PlayerChangedWorldEvent pcwe = new PlayerChangedWorldEvent(this,
+						l.getWorld());
+				CraftServer cserver = (CraftServer) Bukkit.getServer();
+				cserver.getPluginManager().callEvent(pcwe);
+				/// For some reason, world doesnt get changed, so lets explicitly set it
+				this.entity.world = ((CraftWorld) loc.getWorld()).getHandle();
 			}
-			Util.sendMessage(this, getName() + "&e " + teleporting + " from &4"
-					+ fromWorld + Util.getLocString(loc) + " &e-> &4" + toWorld
-					+ Util.getLocString(l));
-		}
-		this.loc = l.clone();
-		if (changedWorlds)
-		{
-			PlayerChangedWorldEvent pcwe = new PlayerChangedWorldEvent(this,
-					l.getWorld());
-			CraftServer cserver = (CraftServer) Bukkit.getServer();
-			cserver.getPluginManager().callEvent(pcwe);
+		} catch (Exception e){
+			e.printStackTrace();
 		}
 		return true;
 	}
@@ -134,6 +134,8 @@ public class VirtualPlayer extends CraftPlayer
 	@Override
 	public boolean teleport(Location l)
 	{
+		if (isDead())
+			return false;
 		teleport(l, false);
 		super.teleport(l);
 		return true;
@@ -197,18 +199,33 @@ public class VirtualPlayer extends CraftPlayer
 				+ Util.getLocString(loc) + " gm=" + getGameMode();
 	}
 
-	public void setLocation(Location l)
-	{
+	@Override
+	public void setScoreboard(Scoreboard scoreboard){
+		Object s = null;
+		if (scoreboard != null){
+			if (Bukkit.getScoreboardManager().getMainScoreboard() != null &&
+					scoreboard.equals(Bukkit.getScoreboardManager().getMainScoreboard())){
+				s = "BukkitMainScoreboard";
+			} else if(scoreboard.getObjective(DisplaySlot.SIDEBAR) != null){
+				s = scoreboard.getObjective(DisplaySlot.SIDEBAR).getName();
+			} else if(scoreboard.getObjective(DisplaySlot.PLAYER_LIST) != null){
+				s = scoreboard.getObjective(DisplaySlot.PLAYER_LIST).getName();
+			}
+		}
+		if (enableMessages)
+			Util.sendMessage(this, getName() + " setting scoreboard "+ s);
+	}
+
+	public void setLocation(Location l){
 		loc = l;
 	}
 
-	public Player getInformed()
-	{
+
+	public Player getInformed(){
 		return keepInformed;
 	}
 
-	public static void setGlobalMessages(boolean enable)
-	{
+	public static void setGlobalMessages(boolean enable){
 		VirtualPlayer.enableMessages = enable;
 	}
 }

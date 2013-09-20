@@ -4,7 +4,7 @@
     <groupId>mc.alk</groupId>
     <artifactId>VirtualPlayers</artifactId>
     <packaging>jar</packaging>
-    <version>1.4</version>
+    <version>1.5.1</version>
     <name>VirtualPlayers</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,20 +22,32 @@
         <!-- Dependencies that have maven repos -->
         <dependency>
             <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.6.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.5.1-R0.1-SNAPSHOT</version>
+            <version>1.6.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- unknown plugins that I had to add to the repo -->
-        <!-- test dependencies -->        
+        <!-- test dependencies -->
     </dependencies>
     <!-- How we will compile the plugin -->
-    
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.4</version>
+            </extension>
+        </extensions>
         <defaultGoal>install</defaultGoal>
         <!-- Where our source directory is -->
         <sourceDirectory>${basedir}/src/mc</sourceDirectory>
-        <!-- Include all the resources we need -->            
+        <!-- Include all the resources we need -->
         <resources>
             <resource>
                 <targetPath>.</targetPath>
@@ -69,11 +81,17 @@
                         </goals>
                         <configuration>
                             <!-- Specify to remove all unneeded classes -->
-                            <minimizeJar>true</minimizeJar> 
+                            <minimizeJar>true</minimizeJar>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>battleplugins-repo</id>           
+            <url>scp://server.battleplugins.com/var/www/server.battleplugins.com/htdocs/maven</url>
+        </repository>
+    </distributionManagement>
 </project>
