@@ -869,14 +869,14 @@ public class VirtualPlayers extends JavaPlugin implements Listener
 		if (split.length == 3)
 		{
 			// w = Bukkit.getWorlds().get(0);
-			x = Float.valueOf(split[0]);
+			x = Float.valueOf(split[0]) - 1;
 			y = Float.valueOf(split[1]);
 			z = Float.valueOf(split[2]);
 		}
 		else if (split.length > 3 && split.length <= 6)
 		{
 			w = split[0];
-			x = Float.valueOf(split[1]);
+			x = Float.valueOf(split[1]) - 1;
 			y = Float.valueOf(split[2]);
 			z = Float.valueOf(split[3]);
 			if (split.length > 4)
