@@ -1,19 +1,24 @@
 package mc.alk.virtualPlayer;
 
-import net.minecraft.server.v1_6_R3.EntityPlayer;
-import net.minecraft.server.v1_6_R3.MinecraftServer;
-import net.minecraft.server.v1_6_R3.PlayerInteractManager;
-import net.minecraft.server.v1_6_R3.World;
-
+import net.minecraft.server.v1_7_R1.EntityPlayer;
+import net.minecraft.server.v1_7_R1.MinecraftServer;
+import net.minecraft.server.v1_7_R1.PlayerInteractManager;
+import net.minecraft.server.v1_7_R1.WorldServer;
+import net.minecraft.util.com.mojang.authlib.GameProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_6_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R1.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -29,11 +34,14 @@ public class VirtualPlayer extends CraftPlayer
 	GameMode gamemode = GameMode.SURVIVAL;
 
 	Location loc;
+    CraftScoreboard scoreboard;
 
-	public VirtualPlayer(CraftServer cserver, MinecraftServer mcserver,
-			World world, String s, PlayerInteractManager iiw)
+
+	public VirtualPlayer(CraftServer cserver, MinecraftServer mcserver, WorldServer worldServer,
+			GameProfile gameProfile, PlayerInteractManager pim)
 	{
-		super(cserver, new EntityPlayer(mcserver, world, s, iiw));
+		/// mcserver, worldserver, GameProfile, PlayerInteractManager
+		super(cserver, new EntityPlayer(mcserver, worldServer, gameProfile, pim));
 		this.loc = this.getLocation();
 	}
 
@@ -44,19 +52,33 @@ public class VirtualPlayer extends CraftPlayer
 	}
 
 	@Override
+	public InventoryView openInventory(Inventory inv){
+		return null;
+	}
+
+	@Override
+	public void removePotionEffect(PotionEffectType effect){
+		/// do nothing
+	}
+
+	@Override
+	public void closeInventory(){
+		/// do nothing
+	}
+
+	@Override
 	public void updateInventory()
 	{
-		// / Do nothing
+		/// Do nothing
 	}
 
 	@Override
 	public void setGameMode(GameMode gamemode)
 	{
-		try
-		{
+		try{
 			super.setGameMode(gamemode);
-		} catch (Exception e)
-		{
+		} catch (Exception e){
+            /* say nothing*/
 		}
 		this.gamemode = gamemode;
 	}
@@ -67,14 +89,21 @@ public class VirtualPlayer extends CraftPlayer
 		return gamemode;
 	}
 
-	@Override
+    @Override
+    public double getHealth() {
+        return health;
+    }
+
+    @Override
 	public void setHealth(double h)
 	{
 		if (h < 0) h = 0;
 		this.health = h;
-		try{super.setHealth(h);} catch (Exception e){}
-		try{this.getHandle().setHealth((float)h);} catch (Exception e){}
+        try{super.setHealth(h);} catch (Exception e){}
+		try{this.getHandle().setHealth((float)h);} catch (Exception e){e.printStackTrace();}
 	}
+
+
 
 	@Override
 	public boolean isDead()
@@ -131,15 +160,19 @@ public class VirtualPlayer extends CraftPlayer
 		return true;
 	}
 
+    @Override
+    public boolean teleport(Location location,  PlayerTeleportEvent.TeleportCause cause) {
+        if (isDead())
+            return false;
+        super.teleport(location, cause);
+        teleport(location, false);
+        return true;
+    }
+
 	@Override
-	public boolean teleport(Location l)
-	{
-		if (isDead())
-			return false;
-		teleport(l, false);
-		super.teleport(l);
-		return true;
-	}
+	public boolean teleport(Location l) {
+        return teleport(l, PlayerTeleportEvent.TeleportCause.UNKNOWN);
+    }
 
 	public void respawn(Location loc)
 	{
@@ -199,10 +232,12 @@ public class VirtualPlayer extends CraftPlayer
 				+ Util.getLocString(loc) + " gm=" + getGameMode();
 	}
 
+
 	@Override
 	public void setScoreboard(Scoreboard scoreboard){
 		Object s = null;
-		if (scoreboard != null){
+        this.scoreboard = (CraftScoreboard)scoreboard;
+        if (scoreboard != null){
 			if (Bukkit.getScoreboardManager().getMainScoreboard() != null &&
 					scoreboard.equals(Bukkit.getScoreboardManager().getMainScoreboard())){
 				s = "BukkitMainScoreboard";
@@ -216,7 +251,12 @@ public class VirtualPlayer extends CraftPlayer
 			Util.sendMessage(this, getName() + " setting scoreboard "+ s);
 	}
 
-	public void setLocation(Location l){
+    @Override
+    public CraftScoreboard getScoreboard() {
+        return this.scoreboard;
+    }
+
+    public void setLocation(Location l){
 		loc = l;
 	}
 

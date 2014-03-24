@@ -4,7 +4,7 @@
     <groupId>mc.alk</groupId>
     <artifactId>VirtualPlayers</artifactId>
     <packaging>jar</packaging>
-    <version>1.5.5</version>
+    <version>1.5.5.2</version>
     <name>VirtualPlayers</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

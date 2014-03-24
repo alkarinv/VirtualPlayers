@@ -2,11 +2,20 @@ package mc.alk.virtualPlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Util
 {
+    public interface VPMessageListener{
+        public void gettingMessage(Player player, String msg);
+    }
 
-	static public String getLocString(Location l)
+    static final List<VPMessageListener> listeners = new ArrayList<VPMessageListener>();
+
+    static public String getLocString(Location l)
 	{
 		if (l == null) return "null";
 		StringBuilder sb = new StringBuilder();
@@ -20,9 +29,12 @@ public class Util
 
 	public static void sendMessage(VirtualPlayer p, String msg)
 	{
-		final String finalMsg = colorChat("&5[" + p.getDisplayName() + "] &b'"
-				+ msg + "'");
+		final String finalMsg = colorChat("&5[" + p.getDisplayName() + "] &b'"+ msg + "'");
 		Bukkit.getConsoleSender().sendMessage(finalMsg);
+        if (!listeners.isEmpty()){
+            for (VPMessageListener l: listeners) {
+                l.gettingMessage(p, msg);}
+        }
 		if (p.getInformed() != null) p.getInformed().sendMessage(finalMsg);
 	}
 
@@ -36,4 +48,11 @@ public class Util
 		return Math.floor(f) == f;
 	}
 
+    public static boolean addListener(VPMessageListener listener) {
+        return listeners.add(listener);
+    }
+
+    public static boolean removeListener(VPMessageListener listener) {
+        return listeners.remove(listener);
+    }
 }
