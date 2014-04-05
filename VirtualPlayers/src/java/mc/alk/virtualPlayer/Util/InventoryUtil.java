@@ -1,4 +1,4 @@
-package mc.alk.virtualPlayer;
+package mc.alk.virtualPlayer.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -724,7 +724,7 @@ public class InventoryUtil
 
 	/**
 	 * For Serializing an item or printing
-	 * 
+	 *
 	 * @param is
 	 * @return
 	 */

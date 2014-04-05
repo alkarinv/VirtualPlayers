@@ -1,17 +1,18 @@
 package mc.alk.virtualPlayer;
 
-import net.minecraft.server.v1_7_R1.EntityPlayer;
-import net.minecraft.server.v1_7_R1.MinecraftServer;
-import net.minecraft.server.v1_7_R1.PlayerInteractManager;
-import net.minecraft.server.v1_7_R1.WorldServer;
+import mc.alk.virtualPlayer.Util.Util;
+import net.minecraft.server.v1_7_R2.EntityPlayer;
+import net.minecraft.server.v1_7_R2.MinecraftServer;
+import net.minecraft.server.v1_7_R2.PlayerInteractManager;
+import net.minecraft.server.v1_7_R2.WorldServer;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_7_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_7_R1.scoreboard.CraftScoreboard;
+import org.bukkit.craftbukkit.v1_7_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R2.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -115,7 +116,7 @@ public class VirtualPlayer extends CraftPlayer
 	public void sendMessage(String s){
 		if (showMessages && enableMessages)
 			Util.sendMessage(this, (!isOnline() ? "&4(Offline)&b" : "")
-					+ getName() + " gettingMessage= " + s);
+                    + getName() + " gettingMessage= " + s);
 	}
 
 	public void moveTo(Location loc){
@@ -229,7 +230,7 @@ public class VirtualPlayer extends CraftPlayer
 		String world = "&5" + this.loc.getWorld().getName() + ",";
 		return getName() + "&e h=&2" + getHealth() + "&e o=&5" + isOnline()
 				+ "&e d=&7" + isDead() + "&e loc=&4" + world + "&4"
-				+ Util.getLocString(loc) + " gm=" + getGameMode();
+				+ Util.getLocString(loc) + "&e gm=&8" + getGameMode();
 	}
 
 

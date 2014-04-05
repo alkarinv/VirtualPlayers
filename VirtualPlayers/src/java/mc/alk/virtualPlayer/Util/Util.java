@@ -1,5 +1,6 @@
-package mc.alk.virtualPlayer;
+package mc.alk.virtualPlayer.Util;
 
+import mc.alk.virtualPlayer.VirtualPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -19,11 +20,11 @@ public class Util
 	{
 		if (l == null) return "null";
 		StringBuilder sb = new StringBuilder();
-		sb.append(((isInt(l.getX())) ? l.getBlockX() : l.getX()) + ",");
-		sb.append(((isInt(l.getY())) ? l.getBlockY() : l.getY()) + ",");
+		sb.append((isInt(l.getX())) ? l.getBlockX() : l.getX()).append(",");
+		sb.append((isInt(l.getY())) ? l.getBlockY() : l.getY()).append(",");
 		sb.append(((isInt(l.getZ())) ? l.getBlockZ() : l.getZ()));
-		if (l.getYaw() != 0f) sb.append("," + l.getYaw());
-		if (l.getPitch() != 0f) sb.append("," + l.getPitch());
+		if (l.getYaw() != 0f) sb.append(",").append(l.getYaw());
+		if (l.getPitch() != 0f) sb.append(",").append(l.getPitch());
 		return sb.toString();
 	}
 
