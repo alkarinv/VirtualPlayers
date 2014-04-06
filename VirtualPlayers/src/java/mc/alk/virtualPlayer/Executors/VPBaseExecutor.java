@@ -65,11 +65,12 @@ public class VPBaseExecutor extends CustomCommandExecutor{
             throws InvocationTargetException, IllegalAccessException {
         if (args.args.length > 1 && args.args[1] instanceof List ) {
             Object ret = null;
-            Object[] o = Arrays.copyOf(args.args,args.args.length);
+            Object[] o = Arrays.copyOfRange((Object[]) args.args[2], 1, ((Object[])args.args[2]).length);
+            args.args[2] = o;
             List<VirtualPlayer> list = (List<VirtualPlayer>) args.args[1];
             for (Object vp : list){
-                o[1] = vp;
-                ret = mwrapper.method.invoke(mwrapper.obj, o);
+                args.args[1] = vp;
+                ret = mwrapper.method.invoke(mwrapper.obj, args.args);
             }
             return ret;
         } else {

@@ -62,7 +62,7 @@ public class PlayerExecutor extends VPBaseExecutor {
 
 
     @MCCommand(op = true)
-    public boolean showScoreboard(CommandSender sender, VirtualPlayer vp, String... args) {
+    public boolean runCommand(CommandSender sender, VirtualPlayer vp, String... args) {
         String command = StringUtils.join(args, " ");
         sendMessage(sender, "&6 " + vp.getName() + "&2 executing '&6" + command + "&2'");
         PlayerCommandPreprocessEvent pcpe = new PlayerCommandPreprocessEvent(vp, "/" + command);
