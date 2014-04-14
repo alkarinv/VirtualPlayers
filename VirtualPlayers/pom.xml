@@ -4,7 +4,7 @@
     <groupId>mc.alk</groupId>
     <artifactId>VirtualPlayers</artifactId>
     <packaging>jar</packaging>
-    <version>1.5.7.1</version>
+    <version>1.5.8</version>
     <name>VirtualPlayers</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.7.5-R0.1-SNAPSHOT</version>
+            <version>1.7.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- unknown plugins that I had to add to the repo -->

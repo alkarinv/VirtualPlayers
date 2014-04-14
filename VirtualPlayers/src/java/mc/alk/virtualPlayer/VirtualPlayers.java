@@ -4,16 +4,16 @@ import mc.alk.virtualPlayer.Executors.CustomCommandExecutor;
 import mc.alk.virtualPlayer.Executors.PlayerExecutor;
 import mc.alk.virtualPlayer.Executors.VPBaseExecutor;
 import mc.alk.virtualPlayer.Executors.VPExecutor;
-import net.minecraft.server.v1_7_R2.MinecraftServer;
-import net.minecraft.server.v1_7_R2.PlayerInteractManager;
-import net.minecraft.server.v1_7_R2.WorldServer;
+import net.minecraft.server.v1_7_R3.MinecraftServer;
+import net.minecraft.server.v1_7_R3.PlayerInteractManager;
+import net.minecraft.server.v1_7_R3.WorldServer;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_7_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -164,7 +164,7 @@ public class VirtualPlayers extends JavaPlugin implements Listener
         PlayerInteractManager pim = new PlayerInteractManager(worldServer);
         if (name == null) {
             name = "p" + (vps.size() + 1);}
-        GameProfile gameProfile = new GameProfile(UUID.randomUUID().toString(), CustomCommandExecutor.colorChat(name));
+        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), CustomCommandExecutor.colorChat(name));
         VirtualPlayer vp = new VirtualPlayer(cserver, mcserver, worldServer, gameProfile, pim);
         vps.put(vp.getUniqueId(), vp);
         names.put(vp.getName(), vp);

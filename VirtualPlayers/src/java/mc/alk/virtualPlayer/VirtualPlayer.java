@@ -1,18 +1,18 @@
 package mc.alk.virtualPlayer;
 
 import mc.alk.virtualPlayer.Util.Util;
-import net.minecraft.server.v1_7_R2.EntityPlayer;
-import net.minecraft.server.v1_7_R2.MinecraftServer;
-import net.minecraft.server.v1_7_R2.PlayerInteractManager;
-import net.minecraft.server.v1_7_R2.WorldServer;
+import net.minecraft.server.v1_7_R3.EntityPlayer;
+import net.minecraft.server.v1_7_R3.MinecraftServer;
+import net.minecraft.server.v1_7_R3.PlayerInteractManager;
+import net.minecraft.server.v1_7_R3.WorldServer;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_7_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_7_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_7_R2.scoreboard.CraftScoreboard;
+import org.bukkit.craftbukkit.v1_7_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_7_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R3.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;

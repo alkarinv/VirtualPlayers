@@ -4,8 +4,8 @@ import mc.alk.virtualPlayer.Util.InventoryUtil;
 import mc.alk.virtualPlayer.Util.Util;
 import mc.alk.virtualPlayer.VirtualPlayer;
 import mc.alk.virtualPlayer.VirtualPlayers;
-import net.minecraft.server.v1_7_R2.DamageSource;
-import net.minecraft.server.v1_7_R2.EntityPlayer;
+import net.minecraft.server.v1_7_R3.DamageSource;
+import net.minecraft.server.v1_7_R3.EntityPlayer;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -18,8 +18,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_7_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_7_R2.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_7_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R3.event.CraftEventFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -307,11 +307,10 @@ public class PlayerExecutor extends VPBaseExecutor {
     }
 
     @MCCommand(cmds = {"hit"}, op = true)
-    public boolean damageEvent(CommandSender sender, Player damager, Player damagee) {
+    public boolean damageEvent(CommandSender sender, Player damager, Player damagee, int damage) {
         if (damagee.getHealth() <= 0) {
             return sendMessage(sender, "&6" + damagee.getName() + "&c is already dead!");
         }
-        Integer damage = 5;
         EntityDamageEvent ede = CraftEventFactory.callEntityDamageEvent(
                 ((CraftPlayer) damager).getHandle(),
                 ((CraftPlayer) damagee).getHandle(),
