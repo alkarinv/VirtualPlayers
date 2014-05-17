@@ -221,6 +221,8 @@ public class VirtualPlayer extends CraftPlayer
 	@Override
 	public void setOp(boolean b)
 	{
+       super.setOp(b); // needed for permissions
+       super.recalculatePermissions();
 		isop = b;
 	}
 
