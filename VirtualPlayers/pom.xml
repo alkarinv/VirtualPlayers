@@ -5,7 +5,7 @@
     <artifactId>VirtualPlayers</artifactId>
     <packaging>jar</packaging>
     <version>1.5.8</version>
-    <name>VirtualPlayers</name>
+    <name>VirtualPlayers-master</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -62,24 +62,6 @@
         </resources>
         <plugins>
             <!-- Specify how we build the plugin.jar -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <!-- Shade (includes these in the final jar) -->
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Specify to remove all unneeded classes -->
-                            <minimizeJar>true</minimizeJar>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <distributionManagement>

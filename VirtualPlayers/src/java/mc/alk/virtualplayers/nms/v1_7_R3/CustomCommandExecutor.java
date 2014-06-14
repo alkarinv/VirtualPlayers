@@ -1,7 +1,6 @@
-package mc.alk.virtualPlayer.Executors;
+package mc.alk.virtualplayers.nms.v1_7_R3;
 
 import mc.alk.virtualPlayer.Util.InventoryUtil;
-import mc.alk.virtualPlayer.VirtualPlayers;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -717,10 +716,10 @@ public class CustomCommandExecutor implements CommandExecutor {
         Player foundPlayer = Bukkit.getPlayer(name);
         if (foundPlayer != null) {
             return foundPlayer;}
-        foundPlayer = VirtualPlayers.getPlayer(name);
+        foundPlayer = VirtualPlayer.getPlayer(name);
         if (foundPlayer != null) {
             return foundPlayer;}
-        Player[] online = VirtualPlayers.getOnlinePlayers();
+        Player[] online = VirtualPlayer.getOnlinePlayers();
 
         for (Player player : online) {
             String playerName = player.getName();

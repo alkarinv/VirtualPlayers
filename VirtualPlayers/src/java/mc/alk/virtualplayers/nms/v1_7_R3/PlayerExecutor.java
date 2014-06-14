@@ -1,9 +1,6 @@
-package mc.alk.virtualPlayer.Executors;
+package mc.alk.virtualplayers.nms.v1_7_R3;
 
 import mc.alk.virtualPlayer.Util.InventoryUtil;
-import mc.alk.virtualPlayer.Util.Util;
-import mc.alk.virtualPlayer.VirtualPlayer;
-import mc.alk.virtualPlayer.VirtualPlayers;
 import net.minecraft.server.v1_7_R3.DamageSource;
 import net.minecraft.server.v1_7_R3.EntityPlayer;
 import org.apache.commons.lang.StringUtils;
@@ -50,14 +47,20 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author alkarin
  */
 public class PlayerExecutor extends VPBaseExecutor {
+    
+    JavaPlugin plugin;
+    
     public PlayerExecutor(Plugin plugin) {
         super(plugin,1);
         super.useAlias = 0;
+        
+        this.plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("VirtualPlayers");
     }
 
 
@@ -199,7 +202,7 @@ public class PlayerExecutor extends VPBaseExecutor {
     public boolean chatEvent(CommandSender sender, final VirtualPlayer vp, String... args) {
         final String msg = Util.colorChat(StringUtils.join(args, " "));
         final HashSet<Player> players = new HashSet<Player>(
-                Arrays.asList(VirtualPlayers.getOnlinePlayers()));
+                Arrays.asList(VirtualPlayer.getOnlinePlayers()));
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -376,7 +379,7 @@ public class PlayerExecutor extends VPBaseExecutor {
                     /// preloginevent
                     /// Sync back up and call the Login and Join events
                     Bukkit.getScheduler().scheduleSyncDelayedTask(
-                            VirtualPlayers.getSelf(), new Runnable(){
+                            plugin, new Runnable(){
                                 @Override
                                 public void run()
                                 {

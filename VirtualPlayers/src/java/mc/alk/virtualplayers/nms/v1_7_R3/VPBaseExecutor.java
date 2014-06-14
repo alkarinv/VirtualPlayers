@@ -1,8 +1,5 @@
-package mc.alk.virtualPlayer.Executors;
+package mc.alk.virtualplayers.nms.v1_7_R3;
 
-import mc.alk.virtualPlayer.Util.Util;
-import mc.alk.virtualPlayer.VirtualPlayer;
-import mc.alk.virtualPlayer.VirtualPlayers;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -46,11 +43,11 @@ public class VPBaseExecutor extends CustomCommandExecutor{
     }
 
     private Object verifyVirtualPlayer(String name, AtomicInteger numUsedStrings) {
-        Player p = VirtualPlayers.getPlayerExact(name);
+        Player p = VirtualPlayer.getPlayerExact(name);
         if (p == null) {
             if (name.contains("-")) { /// return range
                 return getVps(name);}
-            p = VirtualPlayers.getOrCreate(name);
+            p = VirtualPlayer.getOrCreate(name);
         }
         if (!(p instanceof VirtualPlayer)){
             throw new IllegalArgumentException("Player " + name + " is not a VirtualPlayer");
@@ -104,10 +101,10 @@ public class VPBaseExecutor extends CustomCommandExecutor{
             Integer start = Integer.valueOf(split[1]);
             Integer end = Integer.valueOf(split[2]);
             for (int i=start;i<=end;i++){
-                players.add(VirtualPlayers.getOrCreate(name + i));
+                players.add(VirtualPlayer.getOrCreate(name + i));
             }
         } else {
-            players.add(VirtualPlayers.getOrCreate(name));
+            players.add(VirtualPlayer.getOrCreate(name));
         }
         return players;
     }

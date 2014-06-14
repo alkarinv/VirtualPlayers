@@ -1,7 +1,5 @@
-package mc.alk.virtualPlayer.Executors;
+package mc.alk.virtualplayers.nms.v1_7_R3;
 
-import mc.alk.virtualPlayer.VirtualPlayer;
-import mc.alk.virtualPlayer.VirtualPlayers;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
@@ -22,7 +20,7 @@ public class VPExecutor extends VPBaseExecutor {
     public boolean addPlayer(CommandSender sender, Integer numPlayers) throws Exception
     {
         for (int i = 0; i < numPlayers; i++){
-            final VirtualPlayer p1 = (VirtualPlayer) VirtualPlayers.makeVirtualPlayer();
+            final VirtualPlayer p1 = (VirtualPlayer) VirtualPlayer.makeVirtualPlayer();
             sendMessage(sender, "Added Player " + p1.getName());
         }
         return true;
@@ -30,13 +28,13 @@ public class VPExecutor extends VPBaseExecutor {
 
     @MCCommand(cmds = {"removeAll"}, op = true)
     public boolean removeAll(CommandSender sender) {
-        VirtualPlayers.deleteVirtualPlayers();
+        VirtualPlayer.deleteVirtualPlayers();
         return sendMessage(sender, "&2Removed all VirtualPlayers");
     }
 
     @MCCommand(cmds = {"listPlayers"}, op = true)
     public void listVirtualPlayers(CommandSender sender) {
-        List<VirtualPlayer> players = VirtualPlayers.getSelf().getPlayerList();
+        List<VirtualPlayer> players = VirtualPlayer.getPlayerList();
         sender.sendMessage("VirtualPlayers count="+players.size());
 
         Collections.sort(players, new Comparator<VirtualPlayer>() {

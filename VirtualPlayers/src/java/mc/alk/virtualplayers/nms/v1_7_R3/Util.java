@@ -1,6 +1,5 @@
-package mc.alk.virtualPlayer.Util;
+package mc.alk.virtualplayers.nms.v1_7_R3;
 
-import mc.alk.virtualPlayer.VirtualPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
