@@ -2,6 +2,7 @@ package mc.alk.virtualplayers;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mc.alk.virtualplayers.util.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
@@ -11,10 +12,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class VirtualPlayers extends JavaPlugin implements Listener
 {
+    public static final String MAX = "1.7.10-R9.9-SNAPSHOT";
+    public static final String MIN = "1.2.5";
     
     @Override
     public void onEnable()
     {
+        if (!Version.getServer().isSupported(MAX) || !Version.getServer().isCompatible(MIN)) {
+            getLogger().info("VirtualPlayers is not compatible with your server.");
+            getLogger().info("The maximum supported version is " + MAX);
+            getLogger().info("The minimum capatible version is " + MIN);
+            Bukkit.getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         // Bukkit.getPluginManager().registerEvents(this, this);
         // getCommand("vdc").setExecutor(new PlayerExecutor(this));
         // getCommand("virtualplayers").setExecutor(new VPExecutor(this));

@@ -4,11 +4,11 @@
 
     <groupId>mc.alk</groupId>
     <artifactId>VirtualPlayers</artifactId>
-    <version>1.5.9</version>
+    <version>1.5.10</version>
     <packaging>jar</packaging>
 
     <name>VirtualPlayers</name>
-    <url>http://maven.apache.org</url>
+    <url>http://dev.bukkit.org/bukkit-plugins/virtualplayers/</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -114,6 +114,13 @@
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_7_R3</artifactId>
+            <version>parent</version>
+            <type>jar</type>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>mc.alk</groupId>
+            <artifactId>vp-v1_7_R4</artifactId>
             <version>parent</version>
             <type>jar</type>
             <optional>true</optional>

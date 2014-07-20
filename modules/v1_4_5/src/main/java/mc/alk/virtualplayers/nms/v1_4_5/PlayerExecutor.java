@@ -1,6 +1,6 @@
 package mc.alk.virtualplayers.nms.v1_4_5;
 
-import mc.alk.virtualplayers.Util.InventoryUtil;
+import mc.alk.virtualplayers.util.InventoryUtil;
 import net.minecraft.server.v1_4_5.DamageSource;
 import net.minecraft.server.v1_4_5.EntityPlayer;
 import org.apache.commons.lang.StringUtils;

@@ -1,4 +1,4 @@
-package mc.alk.virtualplayers.Util;
+package mc.alk.virtualplayers.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

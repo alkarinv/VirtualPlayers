@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>virtualplayers-v1_7_R1</name>
-    <url>http://maven.apache.org</url>
+    <url>http://dev.bukkit.org/bukkit-plugins/virtualplayers/</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

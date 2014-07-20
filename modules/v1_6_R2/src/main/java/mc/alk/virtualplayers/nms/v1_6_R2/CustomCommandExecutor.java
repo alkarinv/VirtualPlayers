@@ -1,6 +1,6 @@
 package mc.alk.virtualplayers.nms.v1_6_R2;
 
-import mc.alk.virtualplayers.Util.InventoryUtil;
+import mc.alk.virtualplayers.util.InventoryUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
