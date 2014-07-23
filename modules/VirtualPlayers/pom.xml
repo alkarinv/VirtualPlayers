@@ -134,7 +134,7 @@
     </dependencies>
     <build>
         <finalName>VirtualPlayers</finalName>
-        <directory>../../target</directory>
+        <directory>./target</directory>
         <sourceDirectory>./src/main/java</sourceDirectory>
         <resources>
             <resource>
@@ -205,7 +205,7 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <configuration>
                     <tasks>
-                        <copy file="../../target/VirtualPlayers.jar" tofile="../../../server/plugins/VirtualPlayers.jar"/>
+                        <copy file="./target/VirtualPlayers.jar" tofile="../../../../server/plugins/VirtualPlayers.jar"/>
                     </tasks>
                 </configuration>
                 <executions>
