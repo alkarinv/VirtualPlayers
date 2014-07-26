@@ -12,13 +12,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class VirtualPlayers extends JavaPlugin implements Listener
 {
+    Version server;
     public static final String MAX = "1.7.10-R9.9-SNAPSHOT";
     public static final String MIN = "1.2.5";
-    
+    Version NMS;
+
     @Override
-    public void onEnable()
-    {
-        if (!Version.getServer().isSupported(MAX) || !Version.getServer().isCompatible(MIN)) {
+    public void onEnable() {
+        NMS = Version.getNmsVersion();
+        server = Version.getServerVersion();
+        if (!server.isSupported(MAX) || !server.isCompatible(MIN)) {
             getLogger().info("VirtualPlayers is not compatible with your server.");
             getLogger().info("The maximum supported version is " + MAX);
             getLogger().info("The minimum capatible version is " + MIN);
@@ -42,7 +45,7 @@ public class VirtualPlayers extends JavaPlugin implements Listener
             Logger.getLogger(VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void setPlayerMessages(boolean show){
         // mc.alk.virtualplayers.nms.{version}.VirtualPlayer.setGlobalMessages(show);
         try {
@@ -51,7 +54,7 @@ public class VirtualPlayers extends JavaPlugin implements Listener
             Logger.getLogger(VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void setEventMessages(boolean show){
         // mc.alk.virtualplayers.nms.{version}.VPBaseExecutor.setShowEventMessages(show);
         try {
@@ -60,17 +63,11 @@ public class VirtualPlayers extends JavaPlugin implements Listener
             Logger.getLogger(VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public static Class<?> getNmsClass(String clazz) throws Exception {
-        String mcVersion;
-        try {
-            mcVersion = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            mcVersion = "vpre";
-        }
-        return Class.forName("mc.alk.virtualplayers.nms." + mcVersion + "." + clazz);
+
+    public Class<?> getNmsClass(String clazz) throws Exception {
+        return Class.forName("mc.alk.virtualplayers.nms." + NMS + "." + clazz);
     }
-    
+
     private void registerListeners() {
         // mc.alk.virtualplayers.nms.{version}.PlayerListener
         try {
@@ -80,7 +77,7 @@ public class VirtualPlayers extends JavaPlugin implements Listener
             Logger.getLogger(VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void registerCommands() {
         // getCommand("vdc").setExecutor(new PlayerExecutor(this));
         // getCommand("virtualplayers").setExecutor(new VPExecutor(this));
