@@ -15,11 +15,11 @@ public class VirtualPlayers extends JavaPlugin implements Listener
     Version server;
     public static final String MAX = "1.7.10-R9.9-SNAPSHOT";
     public static final String MIN = "1.2.5";
-    Version NMS;
+    String NMS;
 
     @Override
     public void onEnable() {
-        NMS = Version.getNmsVersion();
+        NMS = Version.getNmsVersion().toString();
         server = Version.getServerVersion();
         if (!server.isSupported(MAX) || !server.isCompatible(MIN)) {
             getLogger().info("VirtualPlayers is not compatible with your server.");
