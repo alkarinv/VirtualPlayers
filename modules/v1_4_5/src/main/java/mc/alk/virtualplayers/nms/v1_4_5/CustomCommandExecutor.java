@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -516,8 +517,19 @@ public class CustomCommandExecutor implements CommandExecutor {
             return verifyGameMode(string);
         } else if (ItemStack.class == clazz) {
             return verifyItemStack(args,curIndex, numUsedStrings);
+        } else if (Material.class == clazz) {
+        	return verifyMaterial(args, curIndex, numUsedStrings);
         }
         return null;
+    }
+
+    private Material verifyMaterial(String[] args, int curIndex, AtomicInteger numUsedStrings) {
+    	Material mat = InventoryUtil.getMat(args[curIndex]);
+    	if (mat == null) {
+    		throw new IllegalArgumentException("Error parsing block " + args[curIndex]);
+    	}
+    	numUsedStrings.set(1);
+    	return mat;
     }
 
     private ItemStack verifyItemStack(String[] args, int curIndex, AtomicInteger numUsedStrings) {
