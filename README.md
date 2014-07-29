@@ -42,7 +42,9 @@ Other Commands
 
 Change Log
 ---
-
+- **v1.5.10**
+  * Fixed BlockPlaceEvent command.
+  * Compatible with 1.2.5 to 1.7.10
 - **v1.5.9**
   * Added backwards compatibility.
   * You can now use one JAR for all craftbukkit versions.
@@ -50,6 +52,7 @@ Change Log
 - **v1.5.6**
   * `/dc help`: now shows help
   * `/dc <vp> sneak <true or false>` : now sneaks and unsneaks
+  * Breaks the BlockPlaceEvent cmd: `/dc <vp> bpe <block> <location>`
 - **v1.4.3**
   * Fixes for cross world moves
 - **v1.4.1.1**
