@@ -7,71 +7,78 @@ import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 
 /**
- * The Version object: Capable of asking the important question: <br/><br/>
- *
- * Is the version that's currently installed & running on the server compatible with a specified version ? <br/><br/>
- *
+ * The Version object: Capable of asking the important questions:. <br/><br/>
+ * 
+ * Is the version that's currently installed on the server compatible/supported with a specified version ? <br/><br/>
+ * 
  * isCompatible(): Is the installed version greater than or equal to the minimum required version ? <br/><br/>
- *
+ * 
  * isSupported(): Is the installed version less than or equal to the maximum required version ? <br/><br/>
- *
- * @author Europia79, BigTeddy98, Tux2
+ * 
+ * @author Europia79, BigTeddy98, Tux2, DSH105
  */
-public class Version implements Comparable<String> {
+public class Version implements Comparable<Version> {
+    
+    final Plugin plugin;
+    final String version;
+    String separator = "[_.-]";
 
-    Plugin plugin;
-    String version;
-    String separator = "[.-]";
-
-    private Version(Version v) {
-        this.plugin = v.getPlugin();
-        this.version = v.toString();
-    }
-
-    public Version(String pluginName) {
+    /**
+     * Factory methods getPluginVersion(), getServerVersion(), getNmsVersion() available for convenience. <br/>
+     */
+    public Version(String version) {
+        this.version = version;
         this.plugin = null;
-        if (pluginName.equalsIgnoreCase("net.minecraft.server")) {
-            try {
-                this.version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-            } catch (ArrayIndexOutOfBoundsException ex) {
-                this.version = "vpre";
-            }
-            return;
-        }
-        this.plugin = Bukkit.getServer().getPluginManager().getPlugin(pluginName);
-        this.version = (plugin == null) ? null : plugin.getDescription().getVersion();
     }
-
+    
     public Version(Server server) {
         this.plugin = null;
         this.version = server.getBukkitVersion();
     }
-
+    
     public Version(Plugin plugin) {
         this.plugin = (plugin == null) ? null : plugin;
         this.version = (plugin == null) ? null : plugin.getDescription().getVersion();
     }
-
-    public static Version getVersion(Plugin plugin) {
+    
+    /**
+     * Factory method used when you want to construct a Version object via a Plugin object. <br/>
+     */
+    public static Version getPluginVersion(Plugin plugin) {
         return new Version(plugin);
     }
-
-    public static Version getVersion(String pluginName) {
-        return new Version(pluginName);
+    
+    /**
+     * Factory method used when you want to construct a Version object via pluginName. <br/>
+     */
+    public static Version getPluginVersion(String pluginName) {
+        return new Version(Bukkit.getPluginManager().getPlugin(pluginName));
     }
-
+    
+    /**
+     * Factory method to conveniently construct a Version object of the server. <br/>
+     */
     public static Version getServerVersion() {
         return new Version(Bukkit.getServer());
     }
-
+    
+    /**
+     * Factory method to conveniently construct a Version object of net.minecraft.server.v1_X_RY package. <br/>
+     */
     public static Version getNmsVersion() {
-        return new Version("net.minecraft.server");
+        String NMS = null;
+            try {
+                NMS = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                NMS = "vpre";
+            }
+        return new Version(NMS);
     }
-
+    
     public Plugin getPlugin() {
         return (plugin == null) ? null : plugin;
     }
-
+    
     public boolean isEnabled() {
         if (this.plugin != null) {
             return this.plugin.isEnabled();
@@ -80,27 +87,27 @@ public class Version implements Comparable<String> {
         }
         return false; // Plugin mis-spelled or not installed on the server.
     }
-
+    
     /**
      * @param minVersion - The absolute minimum version that's required to achieve compatibility.
-     * @return Greater than or equal to will return true. Otherwise, false.
+     * @return Return true, if the currently running/installed version is greater than or equal to minVersion.
      */
     public boolean isCompatible(String minVersion) {
         if (!this.isEnabled()) return false;
-        int x = compareTo(minVersion);
+        int x = compareTo(new Version(minVersion));
         if (x >= 0) {
             return true;
-        }
+        } 
         return false;
     }
-
+    
     /**
      * @param maxVersion - The absolute maximum version that's supported.
-     * @return Less than or equal to will return true. Otherwise, false.
+     * @return Return true, if the currently running/installed version is less than or equal to maxVersion.
      */
     public boolean isSupported(String maxVersion) {
         if (!this.isEnabled()) return false;
-        int x = compareTo(maxVersion);
+        int x = compareTo(new Version(maxVersion));
         if (x <= 0) {
             return true;
         }
@@ -108,33 +115,29 @@ public class Version implements Comparable<String> {
     }
 
     @Override
-    public int compareTo(String whichVersion) {
+    public int compareTo(Version whichVersion) {
         int[] currentVersion = parseVersion(this.version);
-        int[] otherVersion = parseVersion(whichVersion);
+        int[] otherVersion = parseVersion(whichVersion.toString());
         int length = (currentVersion.length >= otherVersion.length) ? currentVersion.length : otherVersion.length;
         for (int index = 0; index <= (length - 1); index = index + 1) {
             try {
                 if (currentVersion[index] != otherVersion[index]) {
-                    if (currentVersion[index] > otherVersion[index]) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
+                    return currentVersion[index] - otherVersion[index];
                 }
             } catch (IndexOutOfBoundsException ex) {
                 if (currentVersion.length > otherVersion.length) {
-                    return 1;
+                    return currentVersion[index] - 0;
                 } else if (currentVersion.length < otherVersion.length) {
-                    return -1;
+                    return 0 - otherVersion[index];
                 }
             }
         }
         return 0;
     }
-
+    
     /**
      * A typical version of 1.2.3.4-b567 will be broken down into an array. <br/><br/>
-     *
+     * 
      * [1] [2] [3] [4] [567]
      */
     private int[] parseVersion(String version) {
@@ -150,28 +153,12 @@ public class Version implements Comparable<String> {
         }
         return temp;
     }
-
+    
     public Version setSeparator(String regex) {
         this.separator = regex;
         return this;
     }
-
-    public int length() {
-        return (version == null) ? 0 : version.length();
-    }
-
-    /**
-     * equalsIgnoreCase().
-     */
-    public boolean equals(String s) {
-        String v = (version == null) ? "" : version;
-        return s.equalsIgnoreCase(v);
-    }
-
-    public boolean contains(CharSequence s) {
-        return (version == null) ? false : version.contains(s);
-    }
-
+    
     /**
      * search() for possible Development builds.
      */
@@ -184,23 +171,18 @@ public class Version implements Comparable<String> {
         }
         return false;
     }
-
+    
     public Version getSubVersion(String regex) {
         if (version == null) return this;
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(this.version);
+        String dev = this.version;
         if (matcher.find()) {
-            String dev = matcher.group();
-            return new Version(this).setVersion(dev);
+            dev = matcher.group();
         }
-        return this;
+        return new Version(dev);
     }
-
-    private Version setVersion(String subVersion) {
-        this.version = subVersion;
-        return this;
-    }
-
+    
     @Override
     public String toString() {
         String v = (this.version == null) ? "" : this.version;
