@@ -30,7 +30,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-public class VirtualPlayer extends CraftPlayer implements Listener {
+public class VirtualPlayer extends CraftPlayer {
 
     Player keepInformed; // / who to send the messages to
     boolean online = true;

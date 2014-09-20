@@ -20,7 +20,6 @@ import org.bukkit.craftbukkit.v1_7_R4.CraftWorld;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_7_R4.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -30,7 +29,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-public class VirtualPlayer extends CraftPlayer implements Listener {
+public class VirtualPlayer extends CraftPlayer {
 
     Player keepInformed; // / who to send the messages to
     boolean online = true;
@@ -327,7 +326,7 @@ public class VirtualPlayer extends CraftPlayer implements Listener {
                 players.add(p);}
         }
         Player[] ps = players.toArray(new Player[players.size()]);
-        Player[] bps = Bukkit.getOnlinePlayers();
+        Player[] bps = Bukkit.getOnlinePlayers().toArray(new Player[0]);
         return (Player[]) ArrayUtils.addAll(ps, bps);
     }
     
