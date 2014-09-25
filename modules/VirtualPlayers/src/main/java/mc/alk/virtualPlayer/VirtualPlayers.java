@@ -2,6 +2,7 @@ package mc.alk.virtualPlayer;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.bukkit.entity.Player;
 
 /**
@@ -30,6 +31,12 @@ public class VirtualPlayers {
     public static Player getPlayer(String pname)
     {
         return mc.alk.virtualplayers.VirtualPlayers.getPlayer(pname);
+    }
+    
+    @Deprecated
+    public static Player getPlayer(UUID id)
+    {
+        return mc.alk.virtualplayers.VirtualPlayers.getPlayer(id);
     }
 
     @Deprecated
