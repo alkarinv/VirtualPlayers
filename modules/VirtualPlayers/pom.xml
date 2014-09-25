@@ -4,7 +4,7 @@
 
     <groupId>mc.alk</groupId>
     <artifactId>VirtualPlayers</artifactId>
-    <version>1.5.10</version>
+    <version>1.6.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>VirtualPlayers</name>
@@ -136,6 +136,13 @@
         <finalName>VirtualPlayers</finalName>
         <directory>./target</directory>
         <sourceDirectory>./src/main/java</sourceDirectory>
+        <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+         <artifactId>wagon-ssh</artifactId>
+         <version>2.6</version>
+      </extension>
+      </extensions>
         <resources>
             <resource>
                 <targetPath>.</targetPath>
@@ -219,4 +226,10 @@
             </plugin>
         </plugins>
     </build>
+    <distributionManagement>
+      <repository>
+        <id>rainbowcraft-repo</id>
+        <url>scp://23.29.127.102/var/www/maven/repository</url>
+      </repository>
+    </distributionManagement>
 </project>
