@@ -31,8 +31,8 @@
     </modules>
     <repositories>
         <repository>
-            <id>battleplugins-repo</id>
-            <url>http://server.battleplugins.com/maven/repository/</url>
+            <id>rainbowcraft-repo</id>
+            <url>http://rainbowcraft.sytes.net/maven/repository/</url>
         </repository>
         <repository>
             <id>bukkit-repo</id>
