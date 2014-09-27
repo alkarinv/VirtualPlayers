@@ -29,9 +29,8 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>C:/Users/Nikolai/Documents/lib/bukkit/1.7.10/craftbukkit.jar</systemPath>
+            <version>1.7.10-R0.1</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
