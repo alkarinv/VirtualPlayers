@@ -1,4 +1,4 @@
-package mc.alk.virtualplayers.nms.vpre;
+package mc.alk.virtualplayers.nms.pre;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

@@ -8,6 +8,28 @@ VirtualPlayers2 was made for developers who need to easily test
 their plugins against multiple versions of craftbukkit.
 
 
+Downloads:
+---
+
+**Official builds**
+
+You can find the official builds at dev.bukkit.org
+
+[http://dev.bukkit.org/bukkit-plugins/virtualplayers2/] (http://dev.bukkit.org/bukkit-plugins/virtualplayers2/ "Official builds")
+
+
+**Development builds**
+
+```python
+"Development builds of this project can be acquired at the provided continuous integration server."
+"These builds have not been approved by the BukkitDev staff. Use them at your own risk."
+```
+
+[http://ci.battleplugins.com/job/VirtualPlayers/](http://ci.battleplugins.com/job/VirtualPlayers/ "dev builds")
+
+The dev builds are primarily for testing purposes.
+
+
 Commands as Players
 ---
 
@@ -29,6 +51,7 @@ Commands as Players
 |`dc <virtual player> interact <left, right> <location>` | do a PlayerInteractEvent on the specified block location |
 |`/dc <virtual player> bpe <block> <location>` | do a BlockPlaceEvent of the given material at the given location |
 |`/dc <virtual player> bbe <location>` | do a BlockBreakEvent at the given location |
+|`/dc <virtual player> pie | Trigger a PlayerPickupItemEvent |
 
 
 Other Commands
@@ -42,6 +65,12 @@ Other Commands
 
 Change Log
 ---
+- **v1.6.2**
+  * Updated to Minecraft 1.8 compatibility.
+- **v1.6.0**
+  * Added PIE command (PlayerPickupItemEvent)
+  * `/dc vp pie` will trigger a PlayerPickupItemEvent.
+  * The VirtualPlayer will pickup items on the ground at his/her location.
 - **v1.5.10**
   * Fixed BlockPlaceEvent command.
   * Compatible with 1.2.5 to 1.7.10
@@ -75,42 +104,14 @@ Change Log
 - **v1.2.0**
   * Add ability for virtual players to fire AsyncPlayerChat events by the use of `/dc <virtual player> chat <message>`
 
-  
-Downloads:
----
-
-**Official builds**
-
-You can find the official builds at dev.bukkit.org  
-
-[http://dev.bukkit.org/bukkit-plugins/virtualplayers/] (http://dev.bukkit.org/bukkit-plugins/virtualplayers/ "Official builds")
-
-
-**Development builds**
-
-```python
-"Development builds of this project can be acquired at the provided continuous integration server."
-"These builds have not been approved by the BukkitDev staff. Use them at your own risk."
-```
-
-[http://ci.battleplugins.com/job/VirtualPlayers/](http://ci.battleplugins.com/job/VirtualPlayers/ "dev builds")
-
-The dev builds are primarily for testing purposes.
-
 
 Contact:
 ======
 
-[Author: alkarin](https://github.com/alkarinv/VirtualPlayers "alkarin/VirtualPlayers")
 
-[alkarin on IRC](http://webchat.esper.net/?nick=&channels=battleplugins "battleplugins IRC")
+* [Europia79](http://dev.bukkit.org/profiles/Europia79 "Europia79 on dev.bukkit.org")
 
-Conversion to a Maven multi-module project [by Europia79](http://dev.bukkit.org/profiles/Europia79 "Europia79 on dev.bukkit.org")
+* Skype: Nicodemis79
 
-
-Javadocs
----
-
-[http://ci.battleplugins.com/job/VirtualPlayers/javadoc/](http://ci.battleplugins.com/job/VirtualPlayers/javadoc/ "javadocs")
-
+* Email: Europia79@hotmail.com
 

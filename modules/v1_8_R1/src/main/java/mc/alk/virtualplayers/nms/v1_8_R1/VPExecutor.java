@@ -1,18 +1,18 @@
-package mc.alk.virtualplayers.nms.vpre;
+package mc.alk.virtualplayers.nms.v1_8_R1;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
 /**
  * @author alkarin
  */
 public class VPExecutor extends VPBaseExecutor {
     public VPExecutor(Plugin plugin) {
-        super(plugin);
+        super(Bukkit.getPluginManager().getPlugin("VirtualPlayers"));
         useAliasIndex(0);
     }
 

@@ -35,7 +35,6 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mc.alk.virtualplayers.nms.v1_7_R2.VirtualPlayer;
 
 /**
  * @author alkarin

@@ -1,4 +1,4 @@
-package mc.alk.virtualplayers.nms.v1_7_R1;
+package mc.alk.virtualplayers.nms.v1_8_R1;
 
 import mc.alk.virtualplayers.util.InventoryUtil;
 import org.apache.commons.lang.StringUtils;

@@ -6,7 +6,7 @@
     <version>parent</version>
     <packaging>pom</packaging>
     <name>VirtualPlayers Parent POM</name>
-    <url>http://github.com/alkarinv/VirtualPlayers</url>
+    <url>https://github.com/Europia79/VirtualPlayers</url>
     <properties>
         <maven.build.timestamp.format>MMdd</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,6 +27,7 @@
         <module>modules/v1_7_R2</module>
         <module>modules/v1_7_R3</module>
         <module>modules/v1_7_R4</module>
+        <module>modules/v1_8_R1</module>
         <module>modules/VirtualPlayers</module>
     </modules>
     <repositories>

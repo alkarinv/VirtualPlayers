@@ -1,21 +1,21 @@
-package mc.alk.virtualplayers.nms.vpre;
+package mc.alk.virtualplayers.nms.v1_8_R1;
 
 import mc.alk.virtualplayers.util.InventoryUtil;
-import net.minecraft.server.DamageSource;
-import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.v1_8_R1.DamageSource;
+import net.minecraft.server.v1_8_R1.EntityPlayer;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -34,28 +34,36 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import org.bukkit.ChatColor;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author alkarin
  */
 public class PlayerExecutor extends VPBaseExecutor {
-    
-    JavaPlugin plugin;
-    
-    public PlayerExecutor(Plugin plugin) {
-        super(plugin,1);
-        super.useAlias = 0;
-        this.plugin = (JavaPlugin) plugin;
-    }
 
+    JavaPlugin plugin;
+
+    public PlayerExecutor(Plugin p) {
+        super((JavaPlugin) Bukkit.getPluginManager().getPlugin("VirtualPlayers"), 1);
+        super.useAlias = 0;
+
+        this.plugin = (JavaPlugin) Bukkit.getPluginManager().getPlugin("VirtualPlayers");
+
+    }
 
     @MCCommand(op = true)
     public boolean runCommand(CommandSender sender, VirtualPlayer vp, String... args) {
@@ -68,6 +76,32 @@ public class PlayerExecutor extends VPBaseExecutor {
         }
         Bukkit.getServer().dispatchCommand(vp, command);
         return true;
+    }
+
+    @MCCommand(cmds = {"showScoreboard"}, op = true)
+    public boolean showScoreboard(CommandSender sender, VirtualPlayer vp) {
+        Scoreboard sc = vp.getScoreboard();
+        if (sc == null) {
+            return sendMessage(sender, "&4Scoreboard for " + vp.getName() + " is null");
+        }
+        sendMessage(sender, "&4Scoreboard &f" + sc.hashCode());
+        sendMessage(sender, "&e -- Teams -- ");
+        Collection<OfflinePlayer> ops = sc.getPlayers();
+        for (Team t : sc.getTeams()) {
+            sendMessage(sender, t.getName() + " - " + t.getDisplayName());
+        }
+        for (Objective o : sc.getObjectives()) {
+            sendMessage(sender, "&2 -- Objective &e" + o.getName() + " - " + o.getDisplayName());
+            for (OfflinePlayer op : ops) {
+                Score score = o.getScore(op);
+                if (score == null) {
+                    continue;
+                }
+                sendMessage(sender, op.getName() + " : " + score.getScore());
+            }
+        }
+        return true;
+
     }
 
     @MCCommand(cmds = {"status"}, op = true)
@@ -124,13 +158,12 @@ public class PlayerExecutor extends VPBaseExecutor {
     @MCCommand(cmds = {"sneak"}, op = true)
     public boolean sneak(CommandSender sender, VirtualPlayer vp, boolean sneak) {
         vp.setSneaking(sneak);
-        if (sneak){
+        if (sneak) {
             return sendMessage(sender, "&6" + vp.getName() + "&e is now &8sneaking");
         } else {
             return sendMessage(sender, "&6" + vp.getName() + "&e is now &fnot sneaking");
         }
     }
-
 
     @MCCommand(cmds = {"examine"}, op = true)
     public boolean examine(CommandSender sender, VirtualPlayer vp, Location l) {
@@ -172,6 +205,11 @@ public class PlayerExecutor extends VPBaseExecutor {
         final String msg = Util.colorChat(StringUtils.join(args, " "));
         final HashSet<Player> players = new HashSet<Player>(
                 Arrays.asList(VirtualPlayer.getOnlinePlayers()));
+
+        System.out.println("sender = " + sender.getName());
+        System.out.println("vp = " + vp.getName());
+        System.out.println("args = " + args.toString());
+        System.out.println("players = " + players.toString());
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -181,7 +219,9 @@ public class PlayerExecutor extends VPBaseExecutor {
         };
         new Thread(r).start();
 
-        sendMessage(sender, "&6" + vp.getName() + "&2 said " + msg);
+        String message = "" + ChatColor.GOLD + "" + vp.getName() + "" + ChatColor.GREEN + " said " + msg;
+        sendMessage(sender, message);
+        // sendMessage(sender, "&6" + vp.getName() + "&2 said " + msg);
         return true;
     }
 
@@ -209,7 +249,7 @@ public class PlayerExecutor extends VPBaseExecutor {
         } else {
             return sendMessage(sender,
                     "&6" + vp.getName() + "&e placed " + mat + " on "
-                            + old + "  at &4" + Util.getLocString(loc)
+                    + old + "  at &4" + Util.getLocString(loc)
             );
         }
     }
@@ -254,23 +294,31 @@ public class PlayerExecutor extends VPBaseExecutor {
             ItemStack[] contents = inv.getContents();
             for (int i = 0; i < contents.length; i++) {
                 ItemStack is = contents[i];
-                if (is != null && is.getType() != Material.AIR)
+                if (is != null && is.getType() != Material.AIR) {
                     sendMessage(sender, "&2" + i + ":&e" + InventoryUtil.getItemString(is));
+                }
             }
         }
         return true;
     }
 
     @MCCommand(cmds = {"health"}, op = true)
-    public boolean health(CommandSender sender, VirtualPlayer damagee, int h, String... args) {
+    public boolean health(CommandSender sender, VirtualPlayer damagee, double h, String... args) {
         boolean force = (args.length > 0 && args[0].equalsIgnoreCase("force"));
-        EntityDamageEvent ede = CraftEventFactory.callEntityDamageEvent(
-                null,
-                damagee.getHandle(),
-                EntityDamageEvent.DamageCause.ENTITY_ATTACK, damagee.getHealth() - h);
-        if (!ede.isCancelled() || force) {
-            damagee.setLastDamageCause(ede);
-            damagee.setHealth(damagee.getHealth() - ede.getDamage());
+        EntityDamageEvent event = new EntityDamageEvent(
+                damagee,
+                EntityDamageEvent.DamageCause.ENTITY_ATTACK,
+                damagee.getHealth() - h);
+        /*
+         EntityDamageEvent ede = PlayerExecutor.callEntityDamageEvent(
+         null,
+         damagee.getHandle(),
+         EntityDamageEvent.DamageCause.ENTITY_ATTACK, // damagee.getHealth() - h,
+         null,
+         null); */
+        if (!event.isCancelled() || force) {
+            damagee.setLastDamageCause(event);
+            damagee.setHealth(damagee.getHealth() - event.getDamage());
             return sendMessage(sender, damagee, "&6" + damagee.getName() + "&2, life=&4" + damagee.getHealth());
 
         } else {
@@ -279,23 +327,27 @@ public class PlayerExecutor extends VPBaseExecutor {
     }
 
     @MCCommand(cmds = {"hit"}, op = true)
-    public boolean damageEvent(CommandSender sender, Player damager, Player damagee) {
+    public boolean damageEvent(CommandSender sender, Player damager, Player damagee, int damage) {
         if (damagee.getHealth() <= 0) {
             return sendMessage(sender, "&6" + damagee.getName() + "&c is already dead!");
         }
-        Integer damage = 5;
-        EntityDamageEvent ede = CraftEventFactory.callEntityDamageEvent(
-                ((CraftPlayer) damager).getHandle(),
-                ((CraftPlayer) damagee).getHandle(),
-                EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage);
-
+        EntityDamageEvent ede = new EntityDamageByEntityEvent(
+                damager, damagee,
+                EntityDamageEvent.DamageCause.ENTITY_ATTACK,
+                damage);
+        /*
+         EntityDamageEvent ede = CraftEventFactory.callEntityDamageEvent(
+         ((Entity) ((CraftPlayer) damager).getHandle()),
+         ((CraftPlayer) damagee).getHandle(),
+         EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage);
+         */
         if (!ede.isCancelled()) {
             damagee.setLastDamageCause(ede);
             EntityPlayer ep = ((CraftPlayer) damagee).getHandle();
             if (damagee instanceof VirtualPlayer) {
                 ((VirtualPlayer) damagee).setHealth(damagee.getHealth() - ede.getDamage());
             } else {
-                ep.damageEntity(DamageSource.GENERIC, ede.getDamage());
+                ep.damageEntity(DamageSource.GENERIC, (float) ede.getDamage());
             }
             return sendMessage(sender, "&6" + damager.getName() + "&2 hit &6"
                     + damagee.getName() + "&2 for &6" + damage + "&2, life=&4"
@@ -310,8 +362,8 @@ public class PlayerExecutor extends VPBaseExecutor {
     public boolean playerKill(VirtualPlayer vp) {
         Server cserver = Bukkit.getServer();
         List<ItemStack> is = new LinkedList<ItemStack>();
-        vp.setHealth(0);
-        vp.damage(100000);
+        vp.setHealth(0.0);
+        vp.damage(100000.0);
         PlayerDeathEvent ede = new PlayerDeathEvent(vp, is, 0, "");
         cserver.getPluginManager().callEvent(ede);
         return true;
@@ -322,69 +374,65 @@ public class PlayerExecutor extends VPBaseExecutor {
         return playerConnection(sender, vp, true);
     }
 
-    @MCCommand(cmds = {"dc","disconnect"}, op = true)
+    @MCCommand(cmds = {"dc", "disconnect"}, op = true)
     public boolean playerDisconnect(CommandSender sender, final VirtualPlayer vp) {
         return playerConnection(sender, vp, false);
     }
 
-    private boolean playerConnection(CommandSender sender, final VirtualPlayer vp, boolean connecting)
-    {
+    private boolean playerConnection(CommandSender sender, final VirtualPlayer vp, boolean connecting) {
         vp.setOnline(connecting);
-        if (connecting)
-        {
+        if (connecting) {
             // PreLogin Event has to be called from a thread other than the
             // main.
             final String playerName = vp.getName();
-            Runnable r = new Runnable()
-            {
+            Runnable r = new Runnable() {
                 @Override
-                public void run()
-                {
-                    try{
+                public void run() {
+                    try {
                         AsyncPlayerPreLoginEvent playerPreLoginEvent = new AsyncPlayerPreLoginEvent(
                                 playerName, InetAddress.getLocalHost());
                         Bukkit.getPluginManager().callEvent(playerPreLoginEvent);
-                    } catch (UnknownHostException ex){/* say nothing */}
+                    } catch (UnknownHostException ex) {/* say nothing */
+
+                    }
                     /// After we are done Asynchronously handling the
                     /// preloginevent
                     /// Sync back up and call the Login and Join events
                     Bukkit.getScheduler().scheduleSyncDelayedTask(
-                            plugin, new Runnable(){
+                            plugin, new Runnable() {
                                 @Override
-                                public void run()
-                                {
+                                public void run() {
                                     // Then the Login Event.
                                     Server cserver = Bukkit.getServer();
-                                    try
-                                    {
+                                    try {
                                         PlayerLoginEvent playerLoginEvent = new PlayerLoginEvent(
                                                 vp, "localhost", InetAddress
                                                 .getLocalHost());
                                         cserver.getPluginManager().callEvent(
                                                 playerLoginEvent);
-                                    } catch (UnknownHostException ex){/* do nothing */}
+                                    } catch (UnknownHostException ex) {/* do nothing */
+
+                                    }
 
                                     // Finally, the player join event.
                                     PlayerJoinEvent playerJoinEvent = new PlayerJoinEvent(
                                             vp, "\u00A7e" + vp.getName()
                                             + " joined the game.");
-                                    cserver.getPluginManager().callEvent( playerJoinEvent);
+                                    cserver.getPluginManager().callEvent(playerJoinEvent);
                                 }
                             });
 
                 }
             };
             new Thread(r).start();
-        }
-        else
-        { /// Disconnecting
+        } else { /// Disconnecting
             Server cserver = Bukkit.getServer();
             PlayerQuitEvent playerQuitEvent = new PlayerQuitEvent(vp, "\u00A7e"
                     + vp.getName() + " left the game.");
             cserver.getPluginManager().callEvent(playerQuitEvent);
         }
-        String msg = "&6" + vp.getName() + "&2 " +
-                (connecting ? "connecting.  Details:&6" + vp : "&cdisconnecting");
+        String msg = "&6" + vp.getName() + "&2 "
+                + (connecting ? "connecting.  Details:&6" + vp : "&cdisconnecting");
         sendMessage(sender, vp, msg);
         return true;
     }

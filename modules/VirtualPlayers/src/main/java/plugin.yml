@@ -1,8 +1,9 @@
 name: ${project.name}
 version: ${project.version}
-authors: [Alkarin]
+authors: [Alkarin, Europia79]
 description: Create Virtualplayers for debugging or running commands otherwise unavailable from the console
 main: mc.alk.virtualplayers.VirtualPlayers
+website: https://github.com/Europia79/VirtualPlayers
 commands:
     virtualplayers:
         aliases: [vp,virtualplayer]

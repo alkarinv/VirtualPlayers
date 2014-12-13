@@ -1,4 +1,4 @@
-package mc.alk.virtualplayers.nms.vpre;
+package mc.alk.virtualplayers.nms.pre;
 
 import mc.alk.virtualplayers.util.InventoryUtil;
 import org.apache.commons.lang.StringUtils;
