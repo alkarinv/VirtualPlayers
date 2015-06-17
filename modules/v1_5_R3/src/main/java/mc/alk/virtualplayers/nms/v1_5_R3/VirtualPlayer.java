@@ -1,14 +1,17 @@
 package mc.alk.virtualplayers.nms.v1_5_R3;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import net.minecraft.server.v1_5_R3.EntityPlayer;
 import net.minecraft.server.v1_5_R3.MinecraftServer;
 import net.minecraft.server.v1_5_R3.PlayerInteractManager;
 import net.minecraft.server.v1_5_R3.WorldServer;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -24,6 +27,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
@@ -59,6 +63,21 @@ public class VirtualPlayer extends CraftPlayer {
     @Override
     public InventoryView openInventory(Inventory inv) {
         return null;
+    }
+
+    @Override
+    public boolean addPotionEffect(PotionEffect effect) {
+        return false;
+    }
+    
+    @Override
+    public boolean addPotionEffect(PotionEffect effect, boolean force) {
+        return false;
+    }
+    
+    @Override
+    public boolean addPotionEffects(Collection<PotionEffect> effects) {
+        return false;
     }
 
     @Override
