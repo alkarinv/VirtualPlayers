@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mc.alk.virtualplayers.util.Version;
+import mc.euro.version.Version;
+import mc.euro.version.VersionFactory;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -18,14 +20,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class VirtualPlayers extends JavaPlugin {
     
-    private Version server;
-    public static final String MAX = "1.7.10-R9.9-SNAPSHOT";
+    public static final String MAX = "1.8.3-R9.9-SNAPSHOT";
     public static final String MIN = "1.2.5";
-    public static final String NMS = Version.getNmsVersion().toString();
+    public static final Version<Server> server = VersionFactory.getServerVersion();
+    public static final String NMS = VersionFactory.getNmsVersion().toString();
 
     @Override
     public void onEnable() {
-        server = Version.getServerVersion();
         if (!server.isSupported(MAX) || !server.isCompatible(MIN)) {
             getLogger().info("VirtualPlayers is not compatible with your server.");
             getLogger().info("The maximum supported version is " + MAX);
