@@ -4,7 +4,7 @@
 
     <groupId>mc.alk</groupId>
     <artifactId>VirtualPlayers</artifactId>
-    <version>1.6.4.1</version>
+    <version>1.6.5</version>
     <packaging>jar</packaging>
 
     <name>VirtualPlayers</name>

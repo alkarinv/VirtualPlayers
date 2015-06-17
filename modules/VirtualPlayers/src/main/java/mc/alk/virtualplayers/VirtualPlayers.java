@@ -20,7 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class VirtualPlayers extends JavaPlugin {
     
-    public static final String MAX = "1.8.3-R9.9-SNAPSHOT";
+    public static final String MAX = "1.8.7-R9.9-SNAPSHOT";
     public static final String MIN = "1.2.5";
     public static final Version<Server> server = VersionFactory.getServerVersion();
     public static final String NMS = VersionFactory.getNmsVersion().toString();
