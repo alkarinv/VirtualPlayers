@@ -44,18 +44,18 @@ public class VirtualPlayers extends JavaPlugin {
     @Override
     public void onDisable()
     {
-        // mc.alk.virtualplayers.nms.{version}.VirtualPlayer.deleteVirtualPlayers();
+        // mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.deleteVirtualPlayers();
         try {
-            getNmsClass("VirtualPlayer").getDeclaredMethod("deleteVirtualPlayers", new Class[]{}).invoke(null);
+            getVirtualPlayerClass().getDeclaredMethod("deleteVirtualPlayers", new Class[]{}).invoke(null);
         } catch (Exception ex) {
             Logger.getLogger(VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void setPlayerMessages(boolean show){
-        // mc.alk.virtualplayers.nms.{version}.VirtualPlayer.setGlobalMessages(show);
+        // mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.setGlobalMessages(show);
         try {
-            getNmsClass("VirtualPlayer").getDeclaredMethod("setGlobalMessages", boolean.class).invoke(null, show);
+            getVirtualPlayerClass().getDeclaredMethod("setGlobalMessages", boolean.class).invoke(null, show);
         } catch (Exception ex) {
             Logger.getLogger(VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -68,6 +68,10 @@ public class VirtualPlayers extends JavaPlugin {
         } catch (Exception ex) {
             Logger.getLogger(VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public static Class getVirtualPlayerClass() throws Exception {
+        return getNmsClass("CraftVirtualPlayer");
     }
 
     public static Class<?> getNmsClass(String clazz) throws Exception {
@@ -101,28 +105,28 @@ public class VirtualPlayers extends JavaPlugin {
 
     /**
      * Used by mc.alk.arena.util.ServerUtil.
-     * Implementation moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer:
+     * Implementation moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer:
      */
     public static Player getPlayer(String pname)  {
         return (Player) invoke("getPlayer", pname);
     }
     
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer.
+     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
      */
     public static Player getPlayer(UUID id)  {
         return (Player) invoke("getPlayer", id);
     }
     
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer.
+     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
      */
     public static Player getPlayerExact(String pname)  {
         return (Player) invoke("getPlayerExact", pname);
     }
 
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer.
+     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
      */
     public static Player getOrMakePlayer(String pname)  {
         return (Player) invoke("getOrMakePlayer", pname);
@@ -130,34 +134,34 @@ public class VirtualPlayers extends JavaPlugin {
     
     /**
      * Used by mc.alk.arena.util.ServerUtil.
-     * Implementation moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer:getOnlinePlayers().
+     * Implementation moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer:getOnlinePlayers().
      */
     public static Player[] getOnlinePlayers()  {
         return (Player[]) invoke("getOnlinePlayers");
     }
     
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer.
+     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
      */
     public static Player makeVirtualPlayer() throws Exception {
         return makeVirtualPlayer(null);
     }
     
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer.
+     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
      */
     public static synchronized Player makeVirtualPlayer(String name) throws Exception {
         return (Player) invoke("makeVirtualPlayer", name);
     }
     
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer.
+     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
      */
     public static Player deleteVirtualPlayer(Object vp)  {
         Player player = null;
         Method[] methods = null;
         try {
-            methods = getNmsClass("VirtualPlayer").getDeclaredMethods();
+            methods = getVirtualPlayerClass().getDeclaredMethods();
         } catch (Exception ex) {
             Logger.getLogger(mc.alk.virtualPlayer.VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -179,35 +183,35 @@ public class VirtualPlayers extends JavaPlugin {
     }
     
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer.
+     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
      */
     public static void deleteVirtualPlayers() {
         invoke("deleteVirtualPlayers");
     }
     
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer.
+     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
      */
     public static List getPlayerList() {
         return (List) invoke("getPlayerList");
     }
     
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer.
+     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
      */
     public static Object getOrCreate(String name)  {
         return invoke("getOrCreate", name);
     }
     
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer.
+     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
      */
     public static Map getVps()  {
         return (Map) invoke("getVps");
     }
     
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.VirtualPlayer.
+     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
      */
     public static Map getNames()  {
         return (Map) invoke("getNames");
@@ -218,13 +222,13 @@ public class VirtualPlayers extends JavaPlugin {
         Method method;
         try {
             if (params == null) {
-                method = getNmsClass("VirtualPlayer").getDeclaredMethod(methodName);
+                method = getVirtualPlayerClass().getDeclaredMethod(methodName);
             } else {
                 Class[] classParams = new Class[params.length];
                 for (int index = 0; index < params.length; index = index + 1) {
                     classParams[index] = params[index].getClass();
                 }
-                method = getNmsClass("VirtualPlayer").getDeclaredMethod(methodName, classParams);
+                method = getVirtualPlayerClass().getDeclaredMethod(methodName, classParams);
             }
             object = method.invoke(null, params);
         } catch (NoSuchMethodException ex) {
