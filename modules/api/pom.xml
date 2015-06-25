@@ -27,6 +27,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>mc.alk</groupId>
+            <artifactId>BattleBukkitLib</artifactId>
+            <version>2.2.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>mc.euro</groupId>
             <artifactId>Version</artifactId>
             <version>1.2</version>
@@ -67,14 +73,18 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
-                                    <include>mc.alk:*</include>
                                     <include>mc.euro:Version</include>
+                                    <include>mc.alk:BattleBukkitLib</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>mc.euro.version</pattern>
                                     <shadedPattern>mc.alk.virtualplayers.version</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>mc.alk.util</pattern>
+                                    <shadedPattern>mc.alk.virtualplayers.battlelib</shadedPattern>
                                 </relocation>
                             </relocations>
                             <filters>
