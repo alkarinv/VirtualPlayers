@@ -1,22 +1,18 @@
 package mc.alk.virtualplayers.nms.v1_5_R3;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+
+import mc.alk.virtualplayers.api.VirtualPlayer;
+import mc.alk.virtualplayers.util.Util;
 
 import net.minecraft.server.v1_5_R3.EntityPlayer;
 import net.minecraft.server.v1_5_R3.MinecraftServer;
 import net.minecraft.server.v1_5_R3.PlayerInteractManager;
 import net.minecraft.server.v1_5_R3.WorldServer;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_5_R3.CraftServer;
 import org.bukkit.craftbukkit.v1_5_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
@@ -32,32 +28,33 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-public class VirtualPlayer extends CraftPlayer {
+public class CraftVirtualPlayer extends CraftPlayer implements VirtualPlayer {
 
     Player keepInformed; // / who to send the messages to
     boolean online = true;
     int health = 20;
     boolean isop = true;
-    static boolean enableMessages = true;
     boolean showMessages = true;
     boolean showTeleports = true;
     GameMode gamemode = GameMode.SURVIVAL;
-    Location loc;
+    Location location;
     CraftScoreboard scoreboard;
     
-    static final Map<UUID, VirtualPlayer> vps = new HashMap<UUID, VirtualPlayer>();
-    static final Map<String, VirtualPlayer> names = new HashMap<String, VirtualPlayer>();
-
-    public VirtualPlayer(CraftServer cserver, MinecraftServer mcserver, WorldServer world, 
-            String s, PlayerInteractManager pim) {
-        /// mcserver, worldserver, string, PlayerInteractManager
+    public CraftVirtualPlayer(CraftServer cserver, MinecraftServer mcserver, 
+            WorldServer world, String s, PlayerInteractManager pim, Location loc) {
         super(cserver, new EntityPlayer(mcserver, world, s, pim));
-        this.loc = this.getLocation();
+        this.location = loc;
+    }
+    
+    public CraftVirtualPlayer(CraftServer cserver, MinecraftServer mcserver, 
+            WorldServer world, String s, PlayerInteractManager pim) {
+        super(cserver, new EntityPlayer(mcserver, world, s, pim));
+        this.location = this.getLocation();
     }
 
-    public VirtualPlayer(CraftServer cserver, EntityPlayer ep) {
+    public CraftVirtualPlayer(CraftServer cserver, EntityPlayer ep) {
         super(cserver, ep);
-        this.loc = this.getLocation();
+        this.location = this.getLocation();
     }
 
     @Override
@@ -139,43 +136,45 @@ public class VirtualPlayer extends CraftPlayer {
 
     @Override
     public void sendMessage(String s) {
-        if (showMessages && enableMessages) {
+        if (showMessages) {
             Util.sendMessage(this, (!isOnline() ? "&4(Offline)&b" : "")
                     + getName() + " gettingMessage= " + s);
         }
     }
 
+    @Override
     public void moveTo(Location loc) {
         entity.move(loc.getX(), loc.getY(), loc.getZ());
     }
 
+    @Override
     public boolean teleport(Location l, boolean respawn) {
         if (isDead()) {
             return false;
         }
         try {
-            boolean changedWorlds = !this.loc.getWorld().getName()
+            boolean changedWorlds = !this.location.getWorld().getName()
                     .equals(l.getWorld().getName());
             final String teleporting = respawn ? "respawning" : "teleporting";
-            if (showTeleports && enableMessages) {
+            if (showTeleports && showMessages) {
                 String fromWorld = "";
                 String toWorld = "";
                 if (changedWorlds) {
-                    fromWorld = "&5" + loc.getWorld().getName() + "&4,";
+                    fromWorld = "&5" + location.getWorld().getName() + "&4,";
                     toWorld = "&5" + l.getWorld().getName() + "&4,";
                 }
                 Util.sendMessage(this, getName() + "&e " + teleporting + " from &4"
-                        + fromWorld + Util.getLocString(loc) + " &e-> &4" + toWorld
+                        + fromWorld + Util.getLocString(location) + " &e-> &4" + toWorld
                         + Util.getLocString(l));
             }
-            this.loc = l.clone();
+            this.location = l.clone();
             if (changedWorlds) {
                 PlayerChangedWorldEvent pcwe = new PlayerChangedWorldEvent(this,
                         l.getWorld());
                 CraftServer cserver = (CraftServer) Bukkit.getServer();
                 cserver.getPluginManager().callEvent(pcwe);
                 /// For some reason, world doesnt get changed, so lets explicitly set it
-                this.entity.world = ((CraftWorld) loc.getWorld()).getHandle();
+                this.entity.world = ((CraftWorld) location.getWorld()).getHandle();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -198,9 +197,10 @@ public class VirtualPlayer extends CraftPlayer {
         return teleport(l, PlayerTeleportEvent.TeleportCause.UNKNOWN);
     }
 
+    @Override
     public void respawn(Location loc) {
         this.health = 20;
-        boolean changedWorlds = !this.loc.getWorld().getName()
+        boolean changedWorlds = !this.location.getWorld().getName()
                 .equals(loc.getWorld().getName());
         CraftServer cserver = (CraftServer) Bukkit.getServer();
         PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(this, loc,
@@ -215,7 +215,7 @@ public class VirtualPlayer extends CraftPlayer {
 
     @Override
     public Location getLocation() {
-        return loc;
+        return location;
     }
 
     @Override
@@ -223,8 +223,9 @@ public class VirtualPlayer extends CraftPlayer {
         return online;
     }
 
+    @Override
     public void setOnline(boolean b) {
-        if (enableMessages) {
+        if (showMessages) {
             Util.sendMessage(this, getName() + " is "
                     + (b ? "connecting" : "disconnecting"));
         }
@@ -243,12 +244,12 @@ public class VirtualPlayer extends CraftPlayer {
 
     @Override
     public String toString() {
-        String world = "&5" + this.loc.getWorld().getName() + ",";
+        String world = "&5" + this.location.getWorld().getName() + ",";
         return getName() + "&e h=&2" + getHealth() + "&e o=&5" + isOnline()
                 + "&e d=&7" + isDead() + "&e loc=&4" + world + "&4"
-                + Util.getLocString(loc) + "&e gm=&8" + getGameMode();
+                + Util.getLocString(location) + "&e gm=&8" + getGameMode();
     }
-
+    
     @Override
     public void setScoreboard(Scoreboard scoreboard) {
         Object s = null;
@@ -263,7 +264,7 @@ public class VirtualPlayer extends CraftPlayer {
                 s = scoreboard.getObjective(DisplaySlot.PLAYER_LIST).getName();
             }
         }
-        if (enableMessages) {
+        if (showMessages) {
             Util.sendMessage(this, getName() + " setting scoreboard " + s);
         }
     }
@@ -274,131 +275,17 @@ public class VirtualPlayer extends CraftPlayer {
     }
 
     public void setLocation(Location l) {
-        loc = l;
+        location = l;
     }
 
+    @Override
     public Player getInformed() {
         return keepInformed;
     }
 
-    public static void setGlobalMessages(boolean enable) {
-        VirtualPlayer.enableMessages = enable;
-    }
-    
-    /**
-     * Everything below was moved out of VirtualPlayers JavaPlugin class. <br/>
-     * 
-     * *********************************************************************
-     * *********************************************************************
-     */
-    public static Player getPlayer(String pname)
-    {
-        Player vp = Bukkit.getPlayer(pname);
-        if (vp == null) vp = names.get(pname);
-        return vp;
+    @Override
+    public void setShowMessages(boolean visibility) {
+        showMessages = visibility;
     }
 
-    public static Player getPlayerExact(String pname)
-    {
-        Player vp = Bukkit.getPlayerExact(pname);
-        if (vp == null) vp = names.get(pname);
-        return vp;
-    }
-
-    public static Player getOrMakePlayer(String pname)
-    {
-        Player vp = Bukkit.getPlayer(pname);
-        if (vp == null) vp = names.get(pname);
-        if (vp == null){
-            try {
-                return makeVirtualPlayer(pname);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return vp;
-    }
-
-    public static Player[] getOnlinePlayers()
-    {
-        List<Player> players = new ArrayList<Player>();
-        for (Player p : vps.values()){
-            if (p.isOnline()){
-                players.add(p);}
-        }
-        Player[] ps = players.toArray(new Player[players.size()]);
-        Player[] bps = Bukkit.getOnlinePlayers();
-        return (Player[]) ArrayUtils.addAll(ps, bps);
-    }
-
-    public static Player makeVirtualPlayer() throws Exception {
-        return makeVirtualPlayer(null);
-    }
-
-    public static synchronized Player makeVirtualPlayer(String name) throws Exception
-    {
-        CraftServer cserver = (CraftServer) Bukkit.getServer();
-        List<World> worlds = cserver.getWorlds();
-        if (worlds == null || worlds.isEmpty())
-            throw new Exception("There must be at least one world");
-        CraftWorld w = (CraftWorld) worlds.get(0);
-        Location location = new Location(w, 0, 0, 0);
-        MinecraftServer mcserver = cserver.getServer();
-        WorldServer world = ((CraftWorld) location.getWorld()).getHandle();
-        WorldServer worldServer = mcserver.getWorldServer(0);
-        PlayerInteractManager pim = new PlayerInteractManager(worldServer);
-        if (name == null) {
-            name = "p" + (vps.size() + 1);}
-        VirtualPlayer vp = new VirtualPlayer(cserver, mcserver, world, name, pim);
-        vps.put(vp.getUniqueId(), vp);
-        names.put(vp.getName(), vp);
-        vp.loc = location;
-        return vp;
-    }
-
-    public static Player deleteVirtualPlayer(VirtualPlayer vp)
-    {
-        WorldServer world = ((CraftWorld) vp.getLocation().getWorld()).getHandle();
-        world.removeEntity(vp.getHandle());
-        vp.remove();
-        vps.remove(vp.getUniqueId());
-        return vp;
-    }
-
-    public static void deleteVirtualPlayers()
-    {
-        for (VirtualPlayer vp : vps.values())
-        {
-            WorldServer world = ((CraftWorld) vp.getLocation().getWorld()).getHandle();
-            world.removeEntity(vp.getHandle());
-            vp.remove();
-        }
-        vps.clear();
-    }
-
-    public static List<VirtualPlayer> getPlayerList() {
-        synchronized (vps) {
-            return new ArrayList<VirtualPlayer>(vps.values());
-        }
-    }
-
-    public static VirtualPlayer getOrCreate(String name) {
-        Player vp = names.get(name);
-        if (vp == null) {
-            try{
-                vp = makeVirtualPlayer(name);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return (VirtualPlayer) vp;
-    }
-    
-    public static Map<UUID, VirtualPlayer> getVps() {
-        return vps;
-    }
-    
-    public static Map<String, VirtualPlayer> getNames() {
-        return names;
-    }
 }
