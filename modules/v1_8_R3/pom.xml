@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
-            <artifactId>vp-util</artifactId>
+            <artifactId>vp-api</artifactId>
             <version>parent</version>
             <optional>true</optional>
         </dependency>
@@ -59,6 +59,25 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+            <!--
+            <plugin>
+                <groupId>net.md-5</groupId>
+                <artifactId>specialsource-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>remap</goal>
+                        </goals>
+                        <configuration>
+                            <srgIn>${basedir}/deprecation-mappings.csrg</srgIn>
+                            <accessIn>${basedir}/deprecation-mappings.at</accessIn>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            -->
         </plugins>
     </build>
 </project>

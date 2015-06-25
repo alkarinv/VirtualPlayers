@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
-            <artifactId>vp-util</artifactId>
+            <artifactId>vp-api</artifactId>
             <version>parent</version>
             <optional>true</optional>
         </dependency>
