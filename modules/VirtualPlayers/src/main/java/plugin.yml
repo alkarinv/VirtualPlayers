@@ -6,7 +6,7 @@ main: mc.alk.virtualplayers.VirtualPlayers
 website: https://github.com/Europia79/VirtualPlayers
 commands:
     virtualplayers:
-        aliases: [vp,virtualplayer]
+        aliases: [vp,vps,virtualplayer]
     ap:
         description: add virtual player
         usage: /ap  [arguments]
