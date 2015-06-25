@@ -1,29 +1,34 @@
 package mc.alk.virtualplayers;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import mc.euro.version.Version;
-import mc.euro.version.VersionFactory;
+
+import mc.alk.virtualplayers.api.VirtualPlayer;
+import mc.alk.virtualplayers.api.VirtualPlayerFactory;
+import mc.alk.virtualplayers.executors.PlayerExecutor;
+import mc.alk.virtualplayers.executors.VPBaseExecutor;
+import mc.alk.virtualplayers.executors.VPExecutor;
+import mc.alk.virtualplayers.listeners.VirtualPlayerListener;
+import mc.alk.virtualplayers.version.Version;
+import mc.alk.virtualplayers.version.VersionFactory;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-
 public class VirtualPlayers extends JavaPlugin {
-    
+
     public static final String MAX = "1.8.7-R9.9-SNAPSHOT";
     public static final String MIN = "1.2.5";
     public static final Version<Server> server = VersionFactory.getServerVersion();
     public static final String NMS = VersionFactory.getNmsVersion().toString();
+
+    static final VirtualPlayerFactory factory = VirtualPlayerFactory.newInstance();
 
     @Override
     public void onEnable() {
@@ -34,217 +39,163 @@ public class VirtualPlayers extends JavaPlugin {
             Bukkit.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        // Bukkit.getPluginManager().registerEvents(this, this);
-        // getCommand("vdc").setExecutor(new PlayerExecutor(this));
-        // getCommand("virtualplayers").setExecutor(new VPExecutor(this));
-        registerCommands();
-        registerListeners();
+        Bukkit.getPluginManager().registerEvents(new VirtualPlayerListener(), this);
+        getCommand("vdc").setExecutor(new PlayerExecutor(this));
+        getCommand("virtualplayers").setExecutor(new VPExecutor(this));
     }
 
     @Override
-    public void onDisable()
-    {
-        // mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.deleteVirtualPlayers();
-        try {
-            getVirtualPlayerClass().getDeclaredMethod("deleteVirtualPlayers", new Class[]{}).invoke(null);
-        } catch (Exception ex) {
-            Logger.getLogger(VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
+    public void onDisable() {
+        deleteVirtualPlayers();
+    }
+
+    public void setPlayerMessages(boolean visibility) {
+        for (VirtualPlayer vp : getVirtualPlayers()) {
+            vp.setShowMessages(visibility);
         }
     }
 
-    public void setPlayerMessages(boolean show){
-        // mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.setGlobalMessages(show);
-        try {
-            getVirtualPlayerClass().getDeclaredMethod("setGlobalMessages", boolean.class).invoke(null, show);
-        } catch (Exception ex) {
-            Logger.getLogger(VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
+    public void setEventMessages(boolean visibility) {
+        VPBaseExecutor.setEventMessages(visibility);
+    }
+
+    public static Map<UUID, VirtualPlayer> getVps() {
+        return VirtualPlayerFactory.getVps();
+    }
+
+    public static Map<String, VirtualPlayer> getNames() {
+        return VirtualPlayerFactory.getNames();
+    }
+
+    public static Player getPlayer(String pname) {
+        Player vp = Bukkit.getPlayer(pname);
+        if (vp == null) {
+            vp = getNames().get(pname);
         }
+        return vp;
     }
 
-    public void setEventMessages(boolean show){
-        // mc.alk.virtualplayers.nms.{version}.VPBaseExecutor.setShowEventMessages(show);
-        try {
-            getNmsClass("VPBaseExecutor").getDeclaredMethod("setShowEventMessages", boolean.class).invoke(null, show);
-        } catch (Exception ex) {
-            Logger.getLogger(VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
+    public static Player getPlayer(UUID id) {
+        Player vp = Bukkit.getPlayer(id);
+        if (vp == null) {
+            vp = getVps().get(id);
         }
-    }
-    
-    public static Class getVirtualPlayerClass() throws Exception {
-        return getNmsClass("CraftVirtualPlayer");
+        return vp;
     }
 
-    public static Class<?> getNmsClass(String clazz) throws Exception {
-        return Class.forName("mc.alk.virtualplayers.nms." + NMS + "." + clazz);
-    }
-
-    private void registerListeners() {
-        // mc.alk.virtualplayers.nms.{version}.PlayerListener
-        try {
-            getServer().getPluginManager().registerEvents(
-                    (Listener) getNmsClass("PlayerListener").getConstructor().newInstance(), this);
-        } catch (Exception ex) {
-            Logger.getLogger(VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
+    public static Player getPlayerExact(String pname) {
+        Player vp = Bukkit.getPlayerExact(pname);
+        if (vp == null) {
+            vp = getNames().get(pname);
         }
+        return vp;
     }
 
-    private void registerCommands() {
-        // getCommand("vdc").setExecutor(new PlayerExecutor(this));
-        // getCommand("virtualplayers").setExecutor(new VPExecutor(this));
-        try {
-            getCommand("vdc").setExecutor(
-                    (CommandExecutor) getNmsClass("PlayerExecutor")
-                    .getConstructor(new Class[]{Plugin.class}).newInstance(this));
-            getCommand("virtualplayers").setExecutor(
-                    (CommandExecutor) getNmsClass("VPExecutor")
-                    .getConstructor(new Class[]{Plugin.class}).newInstance(this));
-        } catch (Exception ex) {
-            Logger.getLogger(VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
+    /**
+     * Calls getNewPlayerList() : i.e. Makes a copy.
+     *
+     * @return A new list, or copy.
+     */
+    public static List<VirtualPlayer> getPlayerList() {
+        return getNewPlayerList();
+    }
+
+    /**
+     * @since v2.0 : This is getPlayerList() renamed to reflect that it's a
+     * copy.
+     * @return A new list, or copy.
+     */
+    public static List<VirtualPlayer> getNewPlayerList() {
+        return VirtualPlayerFactory.getNewPlayerList();
+    }
+    
+    public static Collection<VirtualPlayer> getVirtualPlayers() {
+        return VirtualPlayerFactory.getVirtualPlayers();
+    }
+
+    /**
+     * This absolutely MUST be fixed:.
+     * <pre>
+     * Bukkit.getOnlinePlayers() won't work on older versions because of the return type.
+     * </pre>
+     *
+     * @return
+     */
+    public static Player[] getOnlinePlayers() {
+        generateErrorOnPurpose(); // Self reminder that can't be ignored.
+        List<Player> players = new ArrayList<Player>();
+        for (Player p : VirtualPlayerFactory.getVirtualPlayers()) {
+            if (p.isOnline()) {
+                players.add(p);
+            }
         }
+        Player[] ps = players.toArray(new Player[players.size()]);
+        Player[] bps = Bukkit.getOnlinePlayers().toArray(new Player[0]);
+        return (Player[]) ArrayUtils.addAll(ps, bps);
     }
 
-    /**
-     * Used by mc.alk.arena.util.ServerUtil.
-     * Implementation moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer:
-     */
-    public static Player getPlayer(String pname)  {
-        return (Player) invoke("getPlayer", pname);
-    }
-    
-    /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
-     */
-    public static Player getPlayer(UUID id)  {
-        return (Player) invoke("getPlayer", id);
-    }
-    
-    /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
-     */
-    public static Player getPlayerExact(String pname)  {
-        return (Player) invoke("getPlayerExact", pname);
+    public static Player getOrMakePlayer(String pname) {
+        Player vp = Bukkit.getPlayer(pname);
+        if (vp == null) {
+            vp = getNames().get(pname);
+        }
+        if (vp == null) {
+            try {
+                return makeVirtualPlayer(pname);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return vp;
     }
 
-    /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
-     */
-    public static Player getOrMakePlayer(String pname)  {
-        return (Player) invoke("getOrMakePlayer", pname);
+    public static VirtualPlayer getOrCreate(String name) {
+        Player vp = VirtualPlayerFactory.getNames().get(name);
+        if (vp == null) {
+            try {
+                vp = makeVirtualPlayer(name);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return (VirtualPlayer) vp;
     }
-    
-    /**
-     * Used by mc.alk.arena.util.ServerUtil.
-     * Implementation moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer:getOnlinePlayers().
-     */
-    public static Player[] getOnlinePlayers()  {
-        return (Player[]) invoke("getOnlinePlayers");
-    }
-    
-    /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
-     */
+
     public static Player makeVirtualPlayer() throws Exception {
         return makeVirtualPlayer(null);
     }
-    
-    /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
-     */
+
     public static synchronized Player makeVirtualPlayer(String name) throws Exception {
-        return (Player) invoke("makeVirtualPlayer", name);
+        return factory.makeVirtualPlayer(name);
     }
-    
+
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
+     * @since v2.0
+     * @param name
      */
-    public static Player deleteVirtualPlayer(Object vp)  {
-        Player player = null;
-        Method[] methods = null;
-        try {
-            methods = getVirtualPlayerClass().getDeclaredMethods();
-        } catch (Exception ex) {
-            Logger.getLogger(mc.alk.virtualPlayer.VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        for (Method m : methods) {
-            Class<?>[] params = m.getParameterTypes();
-            if (m.getName().equalsIgnoreCase("deleteVirtualPlayer")) {
-                try {
-                    player = (Player) m.invoke(null, vp);
-                } catch (IllegalAccessException ex) {
-                    Logger.getLogger(mc.alk.virtualPlayer.VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalArgumentException ex) {
-                    Logger.getLogger(mc.alk.virtualPlayer.VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InvocationTargetException ex) {
-                    Logger.getLogger(mc.alk.virtualPlayer.VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-        return player;
+    public static void deleteVirtualPlayer(String name) {
+        VirtualPlayer vp = getNames().get(name);
+        deleteVirtualPlayer(vp);
     }
-    
+
     /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
+     * @since v2.0 : return value changed from Player to void.
+     * @param vp
      */
+    public static void deleteVirtualPlayer(VirtualPlayer vp) {
+        factory.deleteVirtualPlayer(vp);
+    }
+
     public static void deleteVirtualPlayers() {
-        invoke("deleteVirtualPlayers");
-    }
-    
-    /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
-     */
-    public static List getPlayerList() {
-        return (List) invoke("getPlayerList");
-    }
-    
-    /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
-     */
-    public static Object getOrCreate(String name)  {
-        return invoke("getOrCreate", name);
-    }
-    
-    /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
-     */
-    public static Map getVps()  {
-        return (Map) invoke("getVps");
-    }
-    
-    /**
-     * Method moved to mc.alk.virtualplayers.nms.{version}.CraftVirtualPlayer.
-     */
-    public static Map getNames()  {
-        return (Map) invoke("getNames");
-    }
-    
-    private static Object invoke(String methodName, Object... params) {
-        Object object = null;
-        Method method;
-        try {
-            if (params == null) {
-                method = getVirtualPlayerClass().getDeclaredMethod(methodName);
-            } else {
-                Class[] classParams = new Class[params.length];
-                for (int index = 0; index < params.length; index = index + 1) {
-                    classParams[index] = params[index].getClass();
-                }
-                method = getVirtualPlayerClass().getDeclaredMethod(methodName, classParams);
-            }
-            object = method.invoke(null, params);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(mc.alk.virtualPlayer.VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(mc.alk.virtualPlayer.VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(mc.alk.virtualPlayer.VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(mc.alk.virtualPlayer.VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(mc.alk.virtualPlayer.VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(mc.alk.virtualPlayer.VirtualPlayers.class.getName()).log(Level.SEVERE, null, ex);
+        for (VirtualPlayer vp : getNewPlayerList()) {
+            factory.deleteVirtualPlayer(vp);
         }
-        return object;
+    }
+
+    public static void setGlobalMessages(boolean visibility) {
+        for (VirtualPlayer vp : VirtualPlayerFactory.getVirtualPlayers()) {
+            vp.setShowMessages(visibility);
+        }
     }
 
 }

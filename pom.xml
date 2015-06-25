@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <modules>
-        <module>modules/util</module>
+        <module>modules/api</module>
         <module>modules/vpre</module>
         <module>modules/v1_4_5</module>
         <module>modules/v1_4_6</module>

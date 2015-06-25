@@ -4,7 +4,7 @@
 
     <groupId>mc.alk</groupId>
     <artifactId>VirtualPlayers</artifactId>
-    <version>1.6.5</version>
+    <version>1.6.6</version>
     <packaging>jar</packaging>
 
     <name>VirtualPlayers</name>
@@ -25,18 +25,12 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.2-R0.3</version>
+            <version>1.7.10-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>mc.euro</groupId>
-            <artifactId>Version</artifactId>
-            <version>1.1.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>mc.alk</groupId>
-            <artifactId>vp-util</artifactId>
+            <artifactId>vp-api</artifactId>
             <version>parent</version>
             <optional>true</optional>
         </dependency>
@@ -171,12 +165,12 @@
         <directory>./target</directory>
         <sourceDirectory>./src/main/java</sourceDirectory>
         <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-         <artifactId>wagon-ssh</artifactId>
-         <version>2.6</version>
-      </extension>
-      </extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.6</version>
+            </extension>
+        </extensions>
         <resources>
             <resource>
                 <targetPath>.</targetPath>
@@ -229,6 +223,7 @@
                 <executions>
                     <execution>
                         <phase>package</phase>
+                        <!-- Shade (includes these in the final jar) -->
                         <goals>
                             <goal>shade</goal>
                         </goals>
@@ -236,26 +231,9 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
                                 <includes>
-                                    <include>mc.alk:*</include>
-                                    <include>mc.euro:Version</include>
+                                    <include>mc.alk:vp-*</include>
                                 </includes>
                             </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <pattern>mc.euro.version</pattern>
-                                    <shadedPattern>mc.alk.virtualplayers.version</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.*</exclude>
-                                        <exclude>META-INF/**/*.*</exclude>
-                                        <exclude>META-INF/**/*</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -278,10 +256,4 @@
             </plugin>
         </plugins>
     </build>
-    <distributionManagement>
-      <repository>
-        <id>rainbowcraft-repo</id>
-        <url>scp://23.29.127.102/var/www/maven/repository</url>
-      </repository>
-    </distributionManagement>
 </project>

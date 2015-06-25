@@ -3,6 +3,9 @@ package mc.alk.virtualPlayer;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import mc.alk.virtualplayers.api.VirtualPlayer;
+
 import org.bukkit.entity.Player;
 
 /**
@@ -18,6 +21,7 @@ import org.bukkit.entity.Player;
  * versioned package structure.
  * </pre>
  * @author Nikolai
+ * @deprecated scheduled for removal in v2.0
  */
 public class VirtualPlayers {
     
@@ -67,16 +71,34 @@ public class VirtualPlayers {
     {
         return mc.alk.virtualplayers.VirtualPlayers.makeVirtualPlayer(name);
     }
-
+    
     /**
      * Object parameter needs to be changed to a VirtualPlayer interface.
      * @param vp Pass in an instance of VirtualPlayer.
      * @return 
      */
     @Deprecated
-    public static Player deleteVirtualPlayer(Object vp)
+    public static void deleteVirtualPlayer(Object obj)
     {
-        return mc.alk.virtualplayers.VirtualPlayers.deleteVirtualPlayer(vp);
+        if (obj instanceof VirtualPlayer) {
+            VirtualPlayer vp = (VirtualPlayer) obj;
+            mc.alk.virtualplayers.VirtualPlayers.deleteVirtualPlayer(vp);
+        } else if (obj instanceof String) {
+            String name = (String) obj;
+            mc.alk.virtualplayers.VirtualPlayers.deleteVirtualPlayer(name);
+        }
+    }
+    
+    @Deprecated
+    public static void deleteVirtualPlayer(String name)
+    {
+        mc.alk.virtualplayers.VirtualPlayers.deleteVirtualPlayer(name);
+    }
+    
+    @Deprecated
+    public static void deleteVirtualPlayer(VirtualPlayer vp)
+    {
+        mc.alk.virtualplayers.VirtualPlayers.deleteVirtualPlayer(vp);
     }
 
     @Deprecated
