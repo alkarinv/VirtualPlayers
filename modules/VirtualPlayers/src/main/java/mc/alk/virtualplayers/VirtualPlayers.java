@@ -8,12 +8,13 @@ import java.util.UUID;
 
 import mc.alk.virtualplayers.api.VirtualPlayer;
 import mc.alk.virtualplayers.api.VirtualPlayerFactory;
+import mc.alk.virtualplayers.battlelib.bukkit.BukkitInterface;
+import mc.alk.virtualplayers.battlelib.version.Version;
+import mc.alk.virtualplayers.battlelib.version.VersionFactory;
 import mc.alk.virtualplayers.executors.PlayerExecutor;
 import mc.alk.virtualplayers.executors.VPBaseExecutor;
 import mc.alk.virtualplayers.executors.VPExecutor;
 import mc.alk.virtualplayers.listeners.VirtualPlayerListener;
-import mc.alk.virtualplayers.version.Version;
-import mc.alk.virtualplayers.version.VersionFactory;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
@@ -26,7 +27,7 @@ public class VirtualPlayers extends JavaPlugin {
     public static final String MAX = "1.8.7-R9.9-SNAPSHOT";
     public static final String MIN = "1.2.5";
     public static final Version<Server> server = VersionFactory.getServerVersion();
-    public static final String NMS = VersionFactory.getNmsVersion().toString();
+    public static final String NMS = VersionFactory.getNmsPackage();
 
     static final VirtualPlayerFactory factory = VirtualPlayerFactory.newInstance();
 
@@ -114,15 +115,19 @@ public class VirtualPlayers extends JavaPlugin {
     }
 
     /**
-     * This absolutely MUST be fixed:.
+     * Returns all online players, including api.VirtualPlayers. <br/><br/>
      * <pre>
-     * Bukkit.getOnlinePlayers() won't work on older versions because of the return type.
+     * VirtualPlayers.getOnlinePlayers() :
+     * Using this method has an added bonus: It is backwards compatible.
+     * v1.7.9 - Bukkit.getOnlinePlayers - returns Player[]
+     * v1.7.10 - Bukkit.getOnlinePlayers - returns {@code Collection<Player> }
+     * It doesn't matter what the return type for Bukkit.getOnlinePlayers() is,
+     * this method will work.
      * </pre>
      *
-     * @return
+     * @return an Array of bukkit.entity.Player + api.VirtualPlayer.
      */
     public static Player[] getOnlinePlayers() {
-        generateErrorOnPurpose(); // Self reminder that can't be ignored.
         List<Player> players = new ArrayList<Player>();
         for (Player p : VirtualPlayerFactory.getVirtualPlayers()) {
             if (p.isOnline()) {
@@ -130,7 +135,7 @@ public class VirtualPlayers extends JavaPlugin {
             }
         }
         Player[] ps = players.toArray(new Player[players.size()]);
-        Player[] bps = Bukkit.getOnlinePlayers().toArray(new Player[0]);
+        Player[] bps = BukkitInterface.getOnlinePlayers().toArray(new Player[0]);
         return (Player[]) ArrayUtils.addAll(ps, bps);
     }
 

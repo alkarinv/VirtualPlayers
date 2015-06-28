@@ -14,6 +14,9 @@
     <modules>
         <module>modules/api</module>
         <module>modules/vpre</module>
+        <module>modules/v1_2_5</module>
+        <module>modules/v1_3_2</module>
+        <module>modules/v1_4_2</module>
         <module>modules/v1_4_5</module>
         <module>modules/v1_4_6</module>
         <module>modules/v1_4_R1</module>
