@@ -1,9 +1,6 @@
 package mc.alk.virtualplayers.nms.v1_4_5;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import mc.alk.virtualplayers.api.VirtualPlayer;
 import mc.alk.virtualplayers.util.Util;
