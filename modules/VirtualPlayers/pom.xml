@@ -4,7 +4,7 @@
 
     <groupId>mc.alk</groupId>
     <artifactId>VirtualPlayers</artifactId>
-    <version>1.6.7</version>
+    <version>1.6.7.2</version>
     <packaging>jar</packaging>
 
     <name>VirtualPlayers</name>
@@ -18,6 +18,10 @@
         <repository>
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>rainbowcraft-repo</id>
+            <url>http://rainbowcraft.sytes.net/maven/repository/</url>
         </repository>
     </repositories>
 

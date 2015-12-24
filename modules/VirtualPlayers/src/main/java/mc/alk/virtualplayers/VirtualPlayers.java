@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import mc.alk.virtualplayers.api.VirtualPlayer;
 import mc.alk.virtualplayers.api.VirtualPlayerFactory;
 import mc.alk.virtualplayers.battlelib.bukkit.BukkitInterface;
-import mc.alk.virtualplayers.battlelib.version.Version;
 import mc.alk.virtualplayers.battlelib.version.VersionFactory;
 import mc.alk.virtualplayers.executors.PlayerExecutor;
 import mc.alk.virtualplayers.executors.VPBaseExecutor;
@@ -18,25 +18,18 @@ import mc.alk.virtualplayers.listeners.VirtualPlayerListener;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class VirtualPlayers extends JavaPlugin {
 
-    public static final String MAX = "1.8.7-R9.9-SNAPSHOT";
-    public static final String MIN = "1.2.5";
-    public static final Version<Server> server = VersionFactory.getServerVersion();
-    public static final String NMS = VersionFactory.getNmsPackage();
+    private static final String NMS = VersionFactory.getNmsPackage();
 
     static final VirtualPlayerFactory factory = VirtualPlayerFactory.newInstance();
 
     @Override
     public void onEnable() {
-        if (!server.isSupported(MAX) || !server.isCompatible(MIN)) {
-            getLogger().info("VirtualPlayers is not compatible with your server.");
-            getLogger().info("The maximum supported version is " + MAX);
-            getLogger().info("The minimum capatible version is " + MIN);
+        if (!isServerCompatible()) {
             Bukkit.getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -48,6 +41,19 @@ public class VirtualPlayers extends JavaPlugin {
     @Override
     public void onDisable() {
         deleteVirtualPlayers();
+    }
+    
+    private boolean isServerCompatible() {
+        String className = "mc.alk.virtualplayers.nms." + NMS + ".CraftVirtualPlayer";
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException ex) {
+            getLogger().log(Level.WARNING, "VirtualPlayers is not compatible with your server.");
+            getLogger().log(Level.WARNING, "IMPLEMENTATION NOT FOUND: ");
+            getLogger().log(Level.WARNING, className);
+            return false;
+        }
     }
 
     public void setPlayerMessages(boolean visibility) {
