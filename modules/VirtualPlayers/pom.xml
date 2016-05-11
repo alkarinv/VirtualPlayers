@@ -4,7 +4,7 @@
 
     <groupId>mc.alk</groupId>
     <artifactId>VirtualPlayers</artifactId>
-    <version>1.6.8</version>
+    <version>1.7.0</version>
     <packaging>jar</packaging>
 
     <name>VirtualPlayers</name>
@@ -36,154 +36,138 @@
             <groupId>mc.alk</groupId>
             <artifactId>vp-api</artifactId>
             <version>parent</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-vpre</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_2_5</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_3_2</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_4_2</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_4_5</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_4_6</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_4_R1</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_5_R1</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_5_R2</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_5_R3</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_6_R1</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_6_R2</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_6_R3</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_7_R1</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_7_R2</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_7_R3</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_7_R4</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_8_R1</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_8_R2</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_8_R3</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_9_R1</artifactId>
             <version>parent</version>
             <type>jar</type>
-            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>mc.alk</groupId>
+            <artifactId>vp-v1_9_R2</artifactId>
+            <version>parent</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -281,6 +265,9 @@
                 <configuration>
                     <tasks>
                         <copy file="./target/VirtualPlayers2.jar" tofile="../../../server/plugins/VirtualPlayers2.jar"/>
+                        <copy file="./target/VirtualPlayers2.jar" tofile="../../../server/plugins-1.9/VirtualPlayers2.jar"/>
+                        <copy file="./target/VirtualPlayers2.jar" tofile="../../../server/plugins-1.8/VirtualPlayers2.jar"/>
+                        <copy file="./target/VirtualPlayers2.jar" tofile="../../../server/plugins-1.7/VirtualPlayers2.jar"/>
                     </tasks>
                 </configuration>
                 <executions>
