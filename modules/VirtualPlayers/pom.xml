@@ -16,8 +16,8 @@
     
     <repositories>
         <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
+            <id>md_5-repo</id>
+            <url>https://repo.md-5.net/content/groups/public</url>
         </repository>
         <repository>
             <id>rainbowcraft-repo</id>
