@@ -4,7 +4,7 @@
 
     <groupId>mc.alk</groupId>
     <artifactId>VirtualPlayers</artifactId>
-    <version>1.7.2</version>
+    <version>1.7.3</version>
     <packaging>jar</packaging>
 
     <name>VirtualPlayers</name>
@@ -166,6 +166,12 @@
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_10_R1</artifactId>
+            <version>parent</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>mc.alk</groupId>
+            <artifactId>vp-v1_11_R1</artifactId>
             <version>parent</version>
             <type>jar</type>
         </dependency>
