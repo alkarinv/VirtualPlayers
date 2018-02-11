@@ -15,17 +15,17 @@ Downloads:
 
 You can find the official builds at dev.bukkit.org
 
-[http://dev.bukkit.org/bukkit-plugins/virtualplayers2/] (http://dev.bukkit.org/bukkit-plugins/virtualplayers2/ "Official builds")
+[http://dev.bukkit.org/bukkit-plugins/virtualplayers2/](http://dev.bukkit.org/bukkit-plugins/virtualplayers2/ "Official builds")
 
 
 **Development builds**
 
 ```python
-"Development builds of this project can be acquired at the provided continuous integration server."
+"Development builds of this project can be acquired at the provided maven repository."
 "These builds have not been approved by the BukkitDev staff. Use them at your own risk."
 ```
 
-[http://ci.battleplugins.com/job/VirtualPlayers/](http://ci.battleplugins.com/job/VirtualPlayers/ "dev builds")
+[http://rainbowcraft.sytes.net/download/plugins/VirtualPlayers2/](http://rainbowcraft.sytes.net/download/plugins/VirtualPlayers2/ "Dev builds")
 
 The dev builds are primarily for testing purposes.
 
