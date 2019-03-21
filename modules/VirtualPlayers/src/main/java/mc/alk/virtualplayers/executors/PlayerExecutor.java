@@ -2,16 +2,19 @@ package mc.alk.virtualplayers.executors;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import mc.alk.virtualplayers.VirtualPlayers;
 import mc.alk.virtualplayers.api.VirtualPlayer;
-import mc.alk.virtualplayers.battlelib.DamageUtil;
+import mc.alk.virtualplayers.api.Vps;
+import mc.alk.battlebukkitlib.DamageUtil;
 import mc.alk.virtualplayers.util.InventoryUtil;
 import mc.alk.virtualplayers.util.Util;
 
@@ -28,6 +31,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -42,6 +48,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -57,17 +64,17 @@ import org.bukkit.scoreboard.Team;
  * @author alkarin
  */
 public class PlayerExecutor extends VPBaseExecutor {
-    
+
     public PlayerExecutor() {
         super(Bukkit.getPluginManager().getPlugin("VirtualPlayers"), 1);
         super.useAlias = 0;
     }
-    
+
     public PlayerExecutor(Plugin p) {
         super(p, 1);
         super.useAlias = 0;
     }
-    
+
     @MCCommand(op = true)
     public boolean runCommand(CommandSender sender, VirtualPlayer vp, String... args) {
         String command = StringUtils.join(args, " ");
@@ -181,6 +188,23 @@ public class PlayerExecutor extends VPBaseExecutor {
         }
         return true;
     }
+    
+    @MCCommand(cmds = {"movetome", "movehere"}, op = true)
+    public boolean moveVirtualPlayerToMe(CommandSender sender, VirtualPlayer vp) {
+        if (!(sender instanceof Player)) {
+            sendMessage(sender, "You must be a player to use this!");
+            return false;
+        }
+        Player player = (Player) sender;
+        sendMessage(player, "&6" + vp.getName() + " is now trying to come to you!");
+        vp.moveTo(player.getLocation());
+        return true;
+    }
+
+    @MCCommand(cmds = {"tphere"}, op = true)
+    public boolean teleportPlayer(Player sender, VirtualPlayer vp) {
+        return teleportPlayer(sender, vp, sender.getLocation());
+    }
 
     @MCCommand(cmds = {"tp", "teleport"}, op = true)
     public boolean teleportPlayer(CommandSender sender, VirtualPlayer vp, Location l) {
@@ -205,12 +229,11 @@ public class PlayerExecutor extends VPBaseExecutor {
     @MCCommand(cmds = {"chat"}, op = true)
     public boolean chatEvent(CommandSender sender, final VirtualPlayer vp, String... args) {
         final String msg = Util.colorChat(StringUtils.join(args, " "));
-        final Set<Player> players = new HashSet<Player>(
-                Arrays.asList(VirtualPlayers.getOnlinePlayers()));
+        final Set<Player> players = new HashSet<>(Vps.getApi().getOnlinePlayers());
 
         System.out.println("sender = " + sender.getName());
         System.out.println("vp = " + vp.getName());
-        System.out.println("args = " + args.toString());
+        System.out.println("args = " + Arrays.toString(args));
         System.out.println("players = " + players.toString());
         Runnable r = new Runnable() {
             @Override
@@ -231,6 +254,136 @@ public class PlayerExecutor extends VPBaseExecutor {
         World w = vp.getWorld();
         vp.respawn(w.getSpawnLocation());
         return sendMessage(sender, "&6" + vp.getName() + "&2 respawned!");
+    }
+    
+    /**
+     * Used to test vp.getNearbyEntities()
+     */
+    @MCCommand(cmds = {"getNearby", "getNearbyEntities"}, op = true)
+    public boolean getNearbyEntities(CommandSender sender, VirtualPlayer vp) {
+        return getNearbyEntities(sender, vp, 15);
+    }
+    
+    /**
+     * This is a preview of the PIE cmd (PlayerPickupItemEvent).
+     * 
+     * vp.getNearbyEntities() does not give the same results as 
+     * sender.getNearbyEntities() when they both have the same location.
+     * 
+     * sender.getNearbyEntities() works.
+     * vp.getNearbyEntities() does NOT work.
+     * vp.getNearbyEntities() always returns an empty List.
+     */
+    @MCCommand(cmds = {"getNearby", "getNearbyEntities"}, op = true)
+    public boolean getNearbyEntities(CommandSender sender, VirtualPlayer vp, Integer radius) {
+        List<Entity> eList = vp.getNearbyEntities(radius, radius, radius); // broken
+        Collection<Entity> entities = Util.getNearbyEntities(vp, radius);
+        sender.sendMessage("--------------------------");
+        sender.sendMessage("Util.getNearbyEntities(vp)");
+        sender.sendMessage("VirtualPlayer " + vp.getName() + " has found " + entities.size() + " nearby entities (Util).");
+        for (Entity e : entities) {
+            sender.sendMessage(" - " + e.getType().name() );
+        }
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            entities = player.getNearbyEntities(radius, radius, radius);
+            sender.sendMessage("There are " + entities.size() + " entities near the CommandSender.");
+            for (Entity e : entities) {
+                sender.sendMessage(" - " + e.getType().name() );
+            }
+        }
+        sender.sendMessage("--------------------------");
+        sender.sendMessage("vp.getNearbyEntities()");
+        sender.sendMessage("VirtualPlayer " + vp.getName() + " has found " + eList.size() + " nearby entities (vp).");
+        for (Entity e : entities) {
+            sender.sendMessage(" - " + e.getType().name() );
+        }
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            entities = player.getNearbyEntities(radius, radius, radius);
+            sender.sendMessage("There are " + entities.size() + " entities near the CommandSender.");
+            for (Entity e : entities) {
+                sender.sendMessage(" - " + e.getType().name() );
+            }
+        }
+        sender.sendMessage("--------------------------");
+        return true;
+    }
+    
+    /**
+     * These methods do not return the same results:.
+     * <pre>
+     * - vp.getLocation().getChunk().getEntities()
+     * - vp.getNearbyEntities()
+     * 
+     * When conditions are the same, and when the same results are expected.
+     * </pre>
+     * 
+     * vp.getLocation().getChunk().getEntities() works.
+     * vp.getNearbyEntities() does NOT work.
+     * vp.getNearbyEntities() always returns an empty List.
+     */
+    @MCCommand(cmds = {"getChunk", "getChunkEntities"}, op = true)
+    public boolean getChunkEntities(CommandSender sender, VirtualPlayer vp) {
+        Entity[] entities = vp.getLocation().getChunk().getEntities();
+        sender.sendMessage("VirtualPlayer " + vp.getName() + " has found " + entities.length + " entities in the chunk.");
+        for (int x = 0; x < entities.length; x++) {
+            Entity e = entities[x];
+            if (e instanceof Player) {
+                Player p = (Player) e;
+                sender.sendMessage(" - " + p.getName() );
+            } else {
+                sender.sendMessage(" - " + entities[x].getType().name() );
+            }
+        }
+        return true;
+    }
+    
+    @MCCommand(cmds = {"pie", "pickupItems", "PickupItemEvent"}, op = true)
+    public boolean pickupItemEvent(CommandSender sender, VirtualPlayer vp) {
+        return pickupItemEvent(sender, vp, 16);
+    }
+
+    @MCCommand(cmds = {"pie", "pickupItems", "PickupItemEvent"}, op = true)
+    public boolean pickupItemEvent(CommandSender sender, VirtualPlayer vp, Integer radius) {
+        PlayerPickupItemEvent pie;
+        Location loc = vp.getLocation();
+        Collection<Entity> entities = Util.getNearbyEntities(vp, radius);
+        List<Item> items = new ArrayList<Item>();
+        for (Entity entity : entities) {
+            if (entity.getType() == EntityType.DROPPED_ITEM) {
+                Item item = null;
+                try {
+                    item = (Item) entity;
+                } catch (ClassCastException ex) {
+                    continue;
+                }
+                items.add(item);
+                sender.sendMessage("new PlayerPickupItemEvent queued for " + item.getItemStack().getType().name());
+            }
+        }
+        int total = 0;
+        for (int i = 0; i < items.size(); i = i + 1) {
+            int numItemsOnGround = items.size() - (i + 1);
+            pie = new PlayerPickupItemEvent(vp, items.get(i), numItemsOnGround);
+            Bukkit.getPluginManager().callEvent(pie);
+            if (pie.isCancelled()) {
+                sendMessage(sender, "&cPlayerPickupItemEvent cancelled for &a" + items.get(i).getItemStack().getType().name());
+            } else {
+                Map<Integer, ItemStack> excess = vp.getInventory().addItem(items.get(i).getItemStack());
+                if (excess.isEmpty()) {
+                    items.get(i).remove(); // remove the item from the ground
+                    total = total + 1;
+                }
+            }
+        }
+        if (items.isEmpty()) {
+            String locationXYZ = "x=" + loc.getBlockX() + " y=" + loc.getBlockY() + " z=" + loc.getBlockZ();
+            sendMessage(sender, "&cThere were no items to pickup at that location: &e" + locationXYZ);
+            return false;
+        }
+        sendMessage(sender, "&6" + vp.getName() + " &2picked up a total of " + total + " item stacks.");
+        return true;
     }
 
     @MCCommand(cmds = {"bpe", "BlockPlaceEvent"}, op = true)
@@ -432,18 +585,6 @@ public class PlayerExecutor extends VPBaseExecutor {
         String msg = "&6" + vp.getName() + "&2 "
                 + (connecting ? "connecting.  Details:&6" + vp : "&cdisconnecting");
         sendMessage(sender, vp, msg);
-        return true;
-    }
-
-    @MCCommand(cmds = {"movetome"}, op = true)
-    public boolean moveVirtualPlayerToMe(CommandSender sender, VirtualPlayer vp) {
-        if (!(sender instanceof Player)) {
-            sendMessage(sender, "You must be a player to use this!");
-            return false;
-        }
-        Player player = (Player) sender;
-        sendMessage(player, "&6" + vp.getName() + " is now trying to come to you!");
-        vp.moveTo(player.getLocation());
         return true;
     }
 }

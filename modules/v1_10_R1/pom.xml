@@ -3,45 +3,38 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>mc.alk</groupId>
-        <artifactId>vp-parent</artifactId>
-        <version>parent</version>
+        <artifactId>vp-parent-pom</artifactId>
+        <version>static_version</version>
         <relativePath>../../</relativePath>
     </parent>
     <groupId>mc.alk</groupId>
     <artifactId>vp-v1_10_R1</artifactId>
-    <version>parent</version>
+    <version>static_version</version>
     <packaging>jar</packaging>
-
     <name>virtualplayers-v1_10_R1</name>
-    <url>http://dev.bukkit.org/bukkit-plugins/virtualplayers/</url>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.9-R0.3-SNAPSHOT</version>
+            <version>1.10.2-R0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.10-R0.1</version>
+            <version>1.10.2-R0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
-            <artifactId>vp-api</artifactId>
-            <version>parent</version>
+            <artifactId>VirtualPlayersAPI</artifactId>
+            <type>jar</type>
+            <version>${virtualplayers.api.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -53,11 +46,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import mc.alk.virtualplayers.VirtualPlayers;
 import mc.alk.virtualplayers.api.VirtualPlayer;
+import mc.alk.virtualplayers.api.Vps;
 import mc.alk.virtualplayers.util.Util;
 
 import org.bukkit.command.Command;
@@ -48,12 +49,12 @@ public class VPBaseExecutor extends CustomCommandExecutor {
     }
 
     private Object verifyVirtualPlayer(String name, AtomicInteger numUsedStrings) {
-        Player p = VirtualPlayers.getPlayerExact(name);
+        Player p = Vps.getApi().getPlayerExact(name);
         if (p == null) {
             if (name.contains("-")) { /// return range
                 return getVps(name);
             }
-            p = VirtualPlayers.getOrCreate(name);
+            p = Vps.getApi().getOrCreate(name);
         }
         if (!(p instanceof VirtualPlayer)) {
             throw new IllegalArgumentException("Player " + name + " is not a VirtualPlayer");
@@ -109,10 +110,10 @@ public class VPBaseExecutor extends CustomCommandExecutor {
             Integer start = Integer.valueOf(split[1]);
             Integer end = Integer.valueOf(split[2]);
             for (int i = start; i <= end; i++) {
-                players.add(VirtualPlayers.getOrCreate(name + i));
+                players.add(Vps.getApi().getOrCreate(name + i));
             }
         } else {
-            players.add(VirtualPlayers.getOrCreate(name));
+            players.add(Vps.getApi().getOrCreate(name));
         }
         return players;
     }

@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import mc.alk.virtualplayers.VirtualPlayers;
+import mc.alk.virtualplayers.api.Vps;
 import mc.alk.virtualplayers.util.InventoryUtil;
 
 import org.apache.commons.lang.StringUtils;
@@ -802,11 +802,11 @@ public class CustomCommandExecutor implements CommandExecutor {
         if (foundPlayer != null) {
             return foundPlayer;
         }
-        foundPlayer = VirtualPlayers.getPlayer(name);
+        foundPlayer = Vps.getApi().getPlayer(name);
         if (foundPlayer != null) {
             return foundPlayer;
         }
-        Player[] online = VirtualPlayers.getOnlinePlayers();
+        Player[] online = Vps.getApi().getOnlinePlayersArray();
 
         for (Player player : online) {
             String playerName = player.getName();

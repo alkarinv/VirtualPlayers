@@ -1,11 +1,13 @@
 package mc.alk.virtualplayers.executors;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import mc.alk.virtualplayers.VirtualPlayers;
 import mc.alk.virtualplayers.api.VirtualPlayer;
+import mc.alk.virtualplayers.api.Vps;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -29,7 +31,7 @@ public class VPExecutor extends VPBaseExecutor {
     @MCCommand(cmds = {"ap", "addPlayers"}, op = true)
     public boolean addPlayer(CommandSender sender, Integer numPlayers) throws Exception {
         for (int i = 0; i < numPlayers; i++) {
-            final VirtualPlayer p1 = (VirtualPlayer) VirtualPlayers.makeVirtualPlayer();
+            final VirtualPlayer p1 = (VirtualPlayer) Vps.getApi().makeVirtualPlayer();
             sendMessage(sender, "Added Player " + p1.getName());
         }
         return true;
@@ -37,13 +39,13 @@ public class VPExecutor extends VPBaseExecutor {
 
     @MCCommand(cmds = {"removeAll"}, op = true)
     public boolean removeAll(CommandSender sender) {
-        VirtualPlayers.deleteVirtualPlayers();
+        Vps.getApi().deleteVirtualPlayers();
         return sendMessage(sender, "&2Removed all VirtualPlayers");
     }
 
     @MCCommand(cmds = {"listPlayers"}, op = true)
     public void listVirtualPlayers(CommandSender sender) {
-        List<VirtualPlayer> players = VirtualPlayers.getPlayerList();
+        List<VirtualPlayer> players = Vps.getApi().getVirtualPlayersList();
         sender.sendMessage("VirtualPlayers count=" + players.size());
 
         Collections.sort(players, new Comparator<VirtualPlayer>() {
@@ -52,9 +54,9 @@ public class VPExecutor extends VPBaseExecutor {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        for (VirtualPlayer vp : players) {
+        players.forEach((vp) -> {
             sendMessage(sender, vp.getName() + " : " + vp);
-        }
+        });
     }
 
     @MCCommand(cmds = {"showMessages"}, op = true)
@@ -69,7 +71,7 @@ public class VPExecutor extends VPBaseExecutor {
 
     @MCCommand(cmds = {"setMessages"}, op = true)
     public static void setPlayerMessages(boolean visibility) {
-        VirtualPlayers.setGlobalMessages(visibility);
+        Vps.getApi().setGlobalMessages(visibility);
     }
 
     @MCCommand(cmds = {"setEventMessages"}, op = true)

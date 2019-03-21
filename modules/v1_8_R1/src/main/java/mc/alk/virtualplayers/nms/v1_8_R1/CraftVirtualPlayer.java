@@ -2,7 +2,9 @@ package mc.alk.virtualplayers.nms.v1_8_R1;
 
 import com.mojang.authlib.GameProfile;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import mc.alk.virtualplayers.api.VirtualPlayer;
 import mc.alk.virtualplayers.util.Util;
@@ -59,6 +61,16 @@ public class CraftVirtualPlayer extends CraftPlayer implements VirtualPlayer {
     public CraftVirtualPlayer(CraftServer cserver, EntityPlayer ep) {
         super(cserver, ep);
         this.location = this.getLocation();
+    }
+
+    @Override
+    public List<org.bukkit.entity.Entity> getNearbyEntities(double x, double y, double z) {
+        List<net.minecraft.server.v1_8_R1.Entity> notchEntityList = this.entity.world.getEntities(this.entity, this.entity.getBoundingBox().grow(x, y, z));
+        List<org.bukkit.entity.Entity> bukkitEntityList = new ArrayList(notchEntityList.size());
+        for (net.minecraft.server.v1_8_R1.Entity e : notchEntityList) {
+            bukkitEntityList.add(e.getBukkitEntity());
+        }
+        return bukkitEntityList;
     }
 
     @Override

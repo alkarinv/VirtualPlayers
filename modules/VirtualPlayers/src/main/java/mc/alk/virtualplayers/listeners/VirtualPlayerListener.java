@@ -1,7 +1,7 @@
 package mc.alk.virtualplayers.listeners;
 
-import mc.alk.virtualplayers.VirtualPlayers;
 import mc.alk.virtualplayers.api.VirtualPlayer;
+import mc.alk.virtualplayers.api.Vps;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -21,7 +21,7 @@ public class VirtualPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerRespawnBegin(PlayerRespawnEvent event) {
         Player p = event.getPlayer();
-        if (VirtualPlayers.getVps().containsKey(p.getUniqueId()) && (p instanceof VirtualPlayer)) {
+        if (Vps.getApi().getVps().containsKey(p.getUniqueId()) && (p instanceof VirtualPlayer)) {
             p.setHealth(20);
             p.setLastDamageCause(null);
             ((VirtualPlayer) p).setOnline(true);
@@ -31,7 +31,7 @@ public class VirtualPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerRespawnEnd(PlayerRespawnEvent event) {
         Player p = event.getPlayer();
-        if (VirtualPlayers.getVps().containsKey(p.getUniqueId()) && (p instanceof VirtualPlayer)) {
+        if (Vps.getApi().getVps().containsKey(p.getUniqueId()) && (p instanceof VirtualPlayer)) {
             final Location l = event.getRespawnLocation();
             ((VirtualPlayer) p).teleport(l, true);
         }
@@ -39,7 +39,7 @@ public class VirtualPlayerListener implements Listener {
 
     @EventHandler
     public void onAsyncChatEvent(AsyncPlayerChatEvent event) {
-        if (!VirtualPlayers.getVps().containsKey(event.getPlayer().getUniqueId())) {
+        if (!Vps.getApi().getVps().containsKey(event.getPlayer().getUniqueId())) {
             return;
         }
         // For some reason we do need to actually send the messages from

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import mc.alk.util.version.VersionFactory; // BattleBukkitLib
+import mc.euro.version.VersionFactory;
 
 import org.bukkit.entity.Player;
 

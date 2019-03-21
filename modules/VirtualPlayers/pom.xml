@@ -1,185 +1,263 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>mc.alk</groupId>
     <artifactId>VirtualPlayers</artifactId>
-    <version>1.7.4</version>
+    <version>1.7.5</version>
     <packaging>jar</packaging>
-
     <name>VirtualPlayers</name>
-    <url>http://dev.bukkit.org/bukkit-plugins/virtualplayers/</url>
-
+    <url>http://dev.bukkit.org/bukkit-plugins/virtualplayers2/</url>
     <properties>
+        <maven.build.timestamp.format>yyyy_MM_dd</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <doclint>none</doclint>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    
     <repositories>
-        <repository>
-            <id>md_5-repo</id>
-            <url>https://repo.md-5.net/content/groups/public</url>
-        </repository>
         <repository>
             <id>rainbowcraft-repo</id>
             <url>http://rainbowcraft.sytes.net/maven/repository/</url>
         </repository>
+        <repository>
+            <id>spigot-public</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/public/</url>
+        </repository>
+        <repository>
+            <id>bukkit-public</id>
+            <url>https://repo.md-5.net/content/repositories/public/</url>
+        </repository>
     </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.10-R0.1-SNAPSHOT</version>
+            <version>1.7.10-R0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>mc.euro</groupId>
+            <artifactId>Version</artifactId>
+            <version>4.0.1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>mc.euro</groupId>
+            <artifactId>BukkitInterface</artifactId>
+            <version>4.0.1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>mc.alk</groupId>
-            <artifactId>vp-api</artifactId>
-            <version>parent</version>
+            <artifactId>BattleBukkitLib</artifactId>
+            <version>4.1.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>mc.alk</groupId>
+            <artifactId>VirtualPlayersAPI</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_2_5</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_3_2</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_4_2</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_4_5</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_4_6</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_4_R1</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_5_R1</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_5_R2</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_5_R3</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_6_R1</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_6_R2</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_6_R3</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_7_R1</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_7_R2</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_7_R3</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_7_R4</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_8_R1</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_8_R2</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_8_R3</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_9_R1</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_9_R2</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_10_R1</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_11_R1</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>mc.alk</groupId>
             <artifactId>vp-v1_12_R1</artifactId>
-            <version>parent</version>
+            <version>static_version</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -188,12 +266,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <distributionManagement>
-        <repository>
-            <id>rainbowcraft-repo</id>
-            <url>scp://rainbowcraft.sytes.net/var/www/maven/repository</url>
-        </repository>
-    </distributionManagement>
     <build>
         <finalName>VirtualPlayers2</finalName>
         <directory>./target</directory>
@@ -218,29 +290,21 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
                 <configuration>
-                    <skip>false</skip>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <excludes>
+                        <exclude>mc/alk/virtualplayers/nms/**</exclude>
+                        <exclude>mc/alk/virtualplayers/api/**</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <excludes>
-                        <exclude>mc/alk/virtualplayers/nms/**</exclude>
-                        <exclude>mc/alk/virtualplayers/api/**</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -253,44 +317,61 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
-                        <!-- Shade (includes these in the final jar) -->
                         <goals>
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
                             <artifactSet>
+                                <includes>
+                                    <include>mc.euro:Version</include>
+                                </includes>
+                                <includes>
+                                    <include>mc.alk:BattleBukkitLib</include>
+                                </includes>
+                                <includes>
+                                    <include>mc.alk:VirtualPlayersAPI</include>
+                                </includes>
                                 <includes>
                                     <include>mc.alk:vp-*</include>
                                 </includes>
                             </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>mc.euro.version</pattern>
+                                    <shadedPattern>mc.alk.virtualplayers.alib.version</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>mc.euro.bukkitinterface</pattern>
+                                    <shadedPattern>mc.alk.arena.alib.bukkitinterface</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>mc.alk.battlebukkitlib</pattern>
+                                    <shadedPattern>mc.alk.virtualplayers.alib.battlebukkitlib</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <!-- <createDependencyReducedPom>true</createDependencyReducedPom> -->
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
                 <configuration>
-                    <tasks>
-                        <copy file="./target/VirtualPlayers2.jar" tofile="../../../server/plugins/VirtualPlayers2.jar"/>
-                        <copy file="./target/VirtualPlayers2.jar" tofile="../../../server/plugins-1.9/VirtualPlayers2.jar"/>
-                        <copy file="./target/VirtualPlayers2.jar" tofile="../../../server/plugins-1.8/VirtualPlayers2.jar"/>
-                        <copy file="./target/VirtualPlayers2.jar" tofile="../../../server/plugins-1.7/VirtualPlayers2.jar"/>
-                    </tasks>
+                    <skip>false</skip>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>rainbowcraft-repo</id>
+            <url>scp://rainbowcraft.sytes.net/var/www/maven/repository</url>
+        </repository>
+    </distributionManagement>
 </project>

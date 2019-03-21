@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import mc.alk.virtualplayers.api.VirtualPlayer;
-
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -60,7 +58,7 @@ public class InventoryUtil {
             return (e != null ? e.getName() : "null") + ":" + lvl;
         }
     }
-    
+
     private static Map<Material, Armor> initArmor() {
         Map<Material, Armor> temp = new HashMap<Material, Armor>(); // or EnumMap
         temp.put(Material.WOOL, new Armor(ArmorType.HELM, ArmorLevel.WOOL));
@@ -177,7 +175,7 @@ public class InventoryUtil {
         }
         return null;
     }
-    
+
     public static int arrowCount(Player p) {
         return getItemAmount(p.getInventory().getContents(), new ItemStack(
                 Material.ARROW, 1));
@@ -240,7 +238,6 @@ public class InventoryUtil {
     // default : return null;
     // }
     // }
-    
     public static int getItemAmount(ItemStack[] items, ItemStack is) {
         int count = 0;
         for (ItemStack item : items) {
@@ -530,7 +527,7 @@ public class InventoryUtil {
         // System.out.println("string = " + str);
         str = str.replaceAll("[}{]", "");
         str = str.replaceAll("=", " ");
-        
+
         debug("item=" + str);
 
         ItemStack is = null;
@@ -555,9 +552,9 @@ public class InventoryUtil {
     public static ItemStack parseItem(String str) throws Exception {
         str = str.replaceAll("[}{]", "");
         str = str.replaceAll("=", " ");
-        
+
         debug("item=" + str);
-        
+
         ItemStack is = null;
         try {
             String split[] = str.split(" ");
@@ -711,7 +708,7 @@ public class InventoryUtil {
     public static ItemStack getWool(int color) {
         return new ItemStack(Material.WOOL, 1, (short) color);
     }
-    
+
     private static void debug(String output) {
         if (DEBUG) {
             System.out.println(output);

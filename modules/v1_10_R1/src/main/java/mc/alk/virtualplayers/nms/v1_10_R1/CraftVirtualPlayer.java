@@ -347,19 +347,4 @@ public class CraftVirtualPlayer extends CraftPlayer implements VirtualPlayer {
         setMaxHealth(max);
     }
 
-    @Override
-    public Egg throwEgg() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Snowball throwSnowball() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Arrow shootArrow() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
 }
