@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>mc.alk</groupId>
     <artifactId>VirtualPlayers</artifactId>
-    <version>1.7.5</version>
+    <version>1.13.2</version>
     <packaging>jar</packaging>
     <name>VirtualPlayers</name>
     <url>http://dev.bukkit.org/bukkit-plugins/virtualplayers2/</url>
@@ -48,6 +48,13 @@
             <artifactId>BukkitInterface</artifactId>
             <version>4.0.1</version>
             <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>mc.euro</groupId>
+            <artifactId>BukkitAdapter</artifactId>
+            <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
@@ -260,6 +267,22 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>mc.alk</groupId>
+            <artifactId>vp-v1_13_R1</artifactId>
+            <version>static_version</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>mc.alk</groupId>
+            <artifactId>vp-v1_13_R2</artifactId>
+            <version>static_version</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
@@ -317,7 +340,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>2.3</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -328,32 +351,32 @@
                             <artifactSet>
                                 <includes>
                                     <include>mc.euro:Version</include>
-                                </includes>
-                                <includes>
+                                    <include>mc.euro:BukkitInterface</include>
+                                    <include>mc.euro:BukkitAdapter</include>
                                     <include>mc.alk:BattleBukkitLib</include>
-                                </includes>
-                                <includes>
                                     <include>mc.alk:VirtualPlayersAPI</include>
-                                </includes>
-                                <includes>
                                     <include>mc.alk:vp-*</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>mc.euro.version</pattern>
-                                    <shadedPattern>mc.alk.virtualplayers.alib.version</shadedPattern>
+                                    <shadedPattern>mc.alk.virtualplayers.zlib.version</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>mc.euro.bukkitinterface</pattern>
-                                    <shadedPattern>mc.alk.arena.alib.bukkitinterface</shadedPattern>
+                                    <shadedPattern>mc.alk.virtualplayers.zlib.bukkitinterface</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>mc.euro.bukkitadapter</pattern>
+                                    <shadedPattern>mc.alk.virtualplayers.zlib.bukkitadapter</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>mc.alk.battlebukkitlib</pattern>
-                                    <shadedPattern>mc.alk.virtualplayers.alib.battlebukkitlib</shadedPattern>
+                                    <shadedPattern>mc.alk.virtualplayers.zlib.battlebukkitlib</shadedPattern>
                                 </relocation>
                             </relocations>
-                            <!-- <createDependencyReducedPom>true</createDependencyReducedPom> -->
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
                         </configuration>
                     </execution>
                 </executions>
