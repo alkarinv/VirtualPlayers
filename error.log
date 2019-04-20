@@ -1,0 +1,42 @@
+Occurs on v1_7_R4
+Does NOT occur on v1_7_R3
+
+./dc tester connect
+./dc tester chat this is a test msg
+
+The command works fine, but produces an EssentialsChat error.
+
+2014-07-20 13:32:48 [Server thread][INFO] Europia79[/127.0.0.1:54278] logged in with entity id 305 at ([world] -869.5996630658932, 4.0, -1172.589664910662)
+2014-07-20 13:32:53 [Server thread][INFO] [tester] 'tester is connecting'
+2014-07-20 13:32:53 [Server thread][INFO] [tester] 'tester connecting.  Details:tester[0;33;1m h=20.0[0;33;1m o=true[0;33;1m d=[0;37;22mfalse[0;33;1m loc=world,0.0,0.0,0.0[0;33;1m gm=[0;30;1mSURVIVAL'
+2014-07-20 13:32:53 [Server thread][INFO] tester connecting.  Details:tester[0;33;1m h=20.0[0;33;1m o=true[0;33;1m d=[0;37;22mfalse[0;33;1m loc=world,0.0,0.0,0.0[0;33;1m gm=[0;30;1mSURVIVAL
+2014-07-20 13:32:53 [Server thread][INFO] [tester] 'tester[0;33;1m teleporting from 0.0,0.0,0.0 [0;33;1m-> -431.0,4.0,-1211.0'
+2014-07-20 13:32:54 [Server thread][INFO] [tester] 'tester gettingMessage= Welcome, tester!'
+2014-07-20 13:32:54 [Server thread][INFO] [tester] 'tester gettingMessage= Type [0;31;1m/help for a list of commands.'
+2014-07-20 13:32:54 [Server thread][INFO] [tester] 'tester gettingMessage= Type [0;31;1m/list to see who else is online.'
+2014-07-20 13:32:54 [Server thread][INFO] [tester] 'tester gettingMessage= Players online:[0;31;1m 1 - World time:[0;31;1m 4:19 PM'
+2014-07-20 13:32:54 [Server thread][INFO] [tester] 'tester gettingMessage= You have no new mail.'
+DEBUGGING LINES:
+2014-07-20 13:33:03 [Server thread][INFO] sender = CONSOLE
+2014-07-20 13:33:03 [Server thread][INFO] vp = tester
+2014-07-20 13:33:03 [Server thread][INFO] args = [Ljava.lang.String;@5f6bc40
+2014-07-20 13:33:03 [Server thread][INFO] players = [tester&e h=&220.0&e o=&5true&e d=&7false&e loc=&4&5world,&4-431.0,4.0,-1211.0&e gm=&8SURVIVAL, CraftPlayer{name=Europia79}]
+END DEBUGGING LINES.
+2014-07-20 13:33:03 [Server thread][INFO] tester said this is a test msg
+2014-07-20 13:33:03 [Thread-14][ERROR] Could not pass event AsyncPlayerChatEvent to EssentialsChat v2.13.1
+org.bukkit.event.EventException
+	at org.bukkit.plugin.java.JavaPluginLoader$1.execute(JavaPluginLoader.java:294) ~[craftbukkit1710.jar:git-Bukkit-1.7.9-R0.2-14-gd373bc2-b3103jnks]
+	at org.bukkit.plugin.RegisteredListener.callEvent(RegisteredListener.java:62) ~[craftbukkit1710.jar:git-Bukkit-1.7.9-R0.2-14-gd373bc2-b3103jnks]
+	at org.bukkit.plugin.SimplePluginManager.fireEvent(SimplePluginManager.java:501) [craftbukkit1710.jar:git-Bukkit-1.7.9-R0.2-14-gd373bc2-b3103jnks]
+	at org.bukkit.plugin.SimplePluginManager.callEvent(SimplePluginManager.java:483) [craftbukkit1710.jar:git-Bukkit-1.7.9-R0.2-14-gd373bc2-b3103jnks]
+	at mc.alk.virtualplayers.nms.v1_7_R4.PlayerExecutor$1.run(PlayerExecutor.java:216) [VirtualPlayers.jar:?]
+	at java.lang.Thread.run(Unknown Source) [?:1.8.0_05]
+Caused by: java.lang.NullPointerException
+	at com.earth2me.essentials.chat.EssentialsChatPlayerListenerLowest.onPlayerChat(EssentialsChatPlayerListenerLowest.java:50) ~[?:?]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.8.0_05]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[?:1.8.0_05]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[?:1.8.0_05]
+	at java.lang.reflect.Method.invoke(Unknown Source) ~[?:1.8.0_05]
+	at org.bukkit.plugin.java.JavaPluginLoader$1.execute(JavaPluginLoader.java:292) ~[craftbukkit1710.jar:git-Bukkit-1.7.9-R0.2-14-gd373bc2-b3103jnks]
+	... 5 more
+2014-07-20 13:33:03 [Thread-14][INFO] [tester] 'tester gettingMessage= <tester> this is a test msg'
